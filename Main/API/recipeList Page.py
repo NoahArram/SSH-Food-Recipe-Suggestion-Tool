@@ -1,5 +1,6 @@
 import http.client
 import json
+import APIKey
 
 
 #Replace this with data pulled from database, using test data for now
@@ -9,7 +10,7 @@ ingredients = ["apples","bananas","milk","butter","chicken","steak","carrots","y
 conn1 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
 
 headers = {
-    'x-rapidapi-key': "XXX",
+    'x-rapidapi-key': APIKey.key,
     'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
 }
 
@@ -31,7 +32,7 @@ ingredientSearchResultJSON = json.loads(ingredientSearchResult)
 conn2 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
 
 headers = {
-    'x-rapidapi-key': "XXX",
+    'x-rapidapi-key': APIKey.key,
     'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
 }
 

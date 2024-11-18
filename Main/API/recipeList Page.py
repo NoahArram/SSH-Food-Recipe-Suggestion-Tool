@@ -9,7 +9,7 @@ ingredients = ["apples","bananas","milk","butter","chicken","steak","carrots","y
 conn1 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
 
 headers = {
-    'x-rapidapi-key': "855ba63510msh87c18edc980da90p1a2842jsncc58ceeb5d6a",
+    'x-rapidapi-key': "XXX",
     'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
 }
 
@@ -31,7 +31,7 @@ ingredientSearchResultJSON = json.loads(ingredientSearchResult)
 conn2 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
 
 headers = {
-    'x-rapidapi-key': "855ba63510msh87c18edc980da90p1a2842jsncc58ceeb5d6a",
+    'x-rapidapi-key': "XXX",
     'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
 }
 

@@ -7,49 +7,60 @@ import APIKey
 ingredients = ["apples","bananas","milk","butter","chicken","steak","carrots","yoghurt","ketchup"]
 
 
-conn1 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+def get_recipes_by_ingredients(ingredients):
 
-headers = {
-    'x-rapidapi-key': APIKey.key,
-    'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
-}
+    #[[id,title,extra ingredient needed, used ingredients, ranking, prep mins, servings]]
+    recipeList = []
+    numOfResults = 10
 
-requestUrl = "/recipes/findByIngredients?ingredients="
-for i in ingredients:
-    requestUrl+=i+"%2C"
+    conn1 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
 
-requestUrl = requestUrl[:-3]+"number=2"
-conn1.request("GET", requestUrl, headers=headers)
+    headers = {
+        'x-rapidapi-key': APIKey.key,
+        'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
+    }
 
-res = conn1.getresponse()
-data = res.read()
+    requestUrl = "/recipes/findByIngredients?ingredients="
+    for i in ingredients:
+        requestUrl += i + "%2C"
 
-ingredientSearchResult = data.decode("utf-8")
-ingredientSearchResultJSON = json.loads(ingredientSearchResult)
-#print(type(ingredientSearchResult))
+    requestUrl = requestUrl[:-3] + "&number="+str(numOfResults)
+    conn1.request("GET", requestUrl, headers=headers)
 
+    res = conn1.getresponse()
+    data = res.read()
 
-conn2 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+    ingredientSearchResult = data.decode("utf-8")
+    ingredientSearchResultJSON = json.loads(ingredientSearchResult)
 
-headers = {
-    'x-rapidapi-key': APIKey.key,
-    'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
-}
+    conn2 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
 
+    headers = {
+        'x-rapidapi-key': APIKey.key,
+        'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
+    }
 
-requestUrl = "/recipes/informationBulk?ids="
+    requestUrl = "/recipes/informationBulk?ids="
 
-for i in ingredientSearchResultJSON:
-    print(i)
-    
-    requestUrl+=str(i["id"])+"%2C"
+    for i in ingredientSearchResultJSON:
+        requestUrl += str(i["id"]) + "%2C"
+        tempRank = i["usedIngredientCount"]/(len(ingredients)+i["missedIngredientCount"])
+        recipeList.append([i["id"],i["title"],i["missedIngredientCount"],i["usedIngredientCount"],tempRank])
 
-requestUrl=requestUrl[:-3]
+    requestUrl = requestUrl[:-3]
 
-conn2.request("GET", requestUrl, headers=headers)
+    conn2.request("GET", requestUrl, headers=headers)
 
-res = conn2.getresponse()
-data = res.read()
+    res = conn2.getresponse()
+    data = res.read()
 
-bulkRecipeInfoJSON = json.loads(data.decode("utf-8"))
-#print(bulkRecipeInfoJSON)
+    bulkRecipeInfoJSON = json.loads(data.decode("utf-8"))
+    #print(bulkRecipeInfoJSON)
+    for i in bulkRecipeInfoJSON:
+        recipeList[bulkRecipeInfoJSON.index(i)].append(i["preparationMinutes"])
+        recipeList[bulkRecipeInfoJSON.index(i)].append(i["servings"])
+        
+    #print(bulkRecipeInfoJSON)
+    return recipeList
+
+print(get_recipes_by_ingredients(ingredients))

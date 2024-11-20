@@ -61,6 +61,11 @@ def get_recipes_by_ingredients(ingredients):
         recipeList[bulkRecipeInfoJSON.index(i)].append(i["servings"])
         
     #print(bulkRecipeInfoJSON)
-    return recipeList
+    
+    sorted_recipeList = sorted(recipeList, key=lambda x: x[4], reverse=True)
+
+    ranked_recipes = {rank: recipe for rank, recipe in enumerate(sorted_recipeList, start=1)}
+    #return recipeList
+    return ranked_recipes
 
 print(get_recipes_by_ingredients(ingredients))

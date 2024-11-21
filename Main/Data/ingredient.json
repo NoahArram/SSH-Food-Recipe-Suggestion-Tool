@@ -1,0 +1,35 @@
+{
+    "main":[
+        {
+            "ingredients": [
+                "Milk",
+                "Eggs",
+                "Butter"
+            ],
+            "Owner": "Tenant 1"
+        },
+        {
+            "ingredients": [
+                "Peppers",
+                "Chicken",
+                "Milk"
+            ],
+            "Owner": "Tenant 2"
+        },
+        {
+            "ingredients": [
+                "Carrots",
+                "Steak"
+            ],
+            "Owner": "Tenant 3"
+        },
+        {
+            "ingredients": [
+                "Butter",
+                "Yoghurt",
+                "Cheese"
+            ],
+            "Owner": "Tenant 4"
+        }
+    ]
+}

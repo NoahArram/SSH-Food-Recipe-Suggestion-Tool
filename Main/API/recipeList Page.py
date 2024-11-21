@@ -9,7 +9,7 @@ ingredients = ["apples","bananas","milk","butter","chicken","steak","carrots","y
 
 def get_recipes_by_ingredients(ingredients):
 
-    #[[id,title,extra ingredient needed, used ingredients, ranking, prep mins, servings]]
+    #[[id,title,extra ingredient needed, used ingredients, ranking, prep mins, servings,image URL]]
     recipeList = []
     numOfResults = 10
 
@@ -59,6 +59,7 @@ def get_recipes_by_ingredients(ingredients):
     for i in bulkRecipeInfoJSON:
         recipeList[bulkRecipeInfoJSON.index(i)].append(i["preparationMinutes"])
         recipeList[bulkRecipeInfoJSON.index(i)].append(i["servings"])
+        recipeList[bulkRecipeInfoJSON.index(i)].append(i["image"])
         
     #print(bulkRecipeInfoJSON)
     

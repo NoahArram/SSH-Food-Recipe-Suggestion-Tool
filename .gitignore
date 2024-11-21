@@ -1,3 +1,7 @@
 
 Main/API/APIKey.py
 Main/API/__pycache__/APIKey.cpython-310.pyc
+node_modules
+
+package-lock.json
+package.json

@@ -4,7 +4,7 @@ import APIKey
 
 def get_recipe_info(recipeID):
     conn = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-
+    #recipeInfo = [ingredients, instructions]
     recipeInfo = []
     ingredients = []
     instructions = []

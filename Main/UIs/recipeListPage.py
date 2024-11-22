@@ -8,12 +8,30 @@ def close_window():
 # Initialise the main window
 root = tk.Tk()
 root.title("Recipe List")
-root.geometry("400x400")
-root.configure(bg="#87CEFA")
+root.geometry("800x400")
+root.configure(bg="#f6f7fb")
 
-# Title label
-title_label = tk.Label(root, text="Recipe List", font=("Arial", 16), bg="#87CEFA", fg="black")
-title_label.pack(pady=10)
+style = ttk.Style()
+style.theme_use('default')
+
+# Configure the style for select buttons
+style.configure('Select.TButton', 
+    background='#4355ff',
+    foreground='white',
+    font=('Helvetica', 10, 'bold'),
+    borderwidth=0,
+    relief='flat'
+)
+style.map('Select.TButton',
+    background=[('pressed', 'green'), ('active', '#6677ff')],
+    foreground=[('pressed', 'white'), ('active', 'white')]
+)
+
+top_frame = tk.Frame(root, bg="#4355ff", bd=2, relief="flat")
+top_frame.pack(fill="x", side="top", pady=0)
+
+title_label = tk.Label(top_frame, text="Recipe List", font=("Helvetica", 16, "bold"), bg="#4355ff", fg="white")
+title_label.pack(expand=True)
 
 # Create a canvas and a vertical scrollbar
 canvas = tk.Canvas(root)
@@ -27,6 +45,7 @@ canvas.configure(yscrollcommand=scrollbar.set)
 # Create a frame inside the canvas to hold the recipe frames
 recipe_frame = tk.Frame(canvas, bg="#1C1C1C")
 canvas.create_window((0, 0), window=recipe_frame, anchor="nw")
+
 
 # Define the maximum height for the recipe frame
 MAX_FRAME_HEIGHT = 250  # Set the maximum height here

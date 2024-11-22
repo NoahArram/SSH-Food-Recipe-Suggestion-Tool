@@ -1,9 +1,33 @@
 import tkinter as tk
 from tkinter import ttk
+import functools
+import API.getRecipes
+import Data
 
 # Function to close the window
 def close_window():
     root.destroy()
+
+# Function to toggle favourite status
+def toggle_favourite(event, heart_label, recipe):
+    # Update the favourite status
+    recipe["favourite"] = not recipe["favourite"]
+    # Change the heart color based on the new status
+    new_color = "red" if recipe["favourite"] else "white"
+    heart_label.config(fg=new_color)
+
+    print(f"Toggled {recipe['name']} favourite to {recipe['favourite']}")
+
+# Function to adjust scroll region based on content height
+def update_scrollregion(event=None):
+    # Calculate the total height of the recipes and update the scroll region accordingly
+    total_height = sum(child.winfo_height() for child in recipe_frame.winfo_children())
+
+    # Ensure the recipe frame height doesn't exceed MAX_FRAME_HEIGHT
+    frame_height = min(total_height, MAX_FRAME_HEIGHT)
+
+    # Update the canvas scroll region with the new height of the frame
+    canvas.config(scrollregion=(0, 0, 0, frame_height))
 
 # Initialise the main window
 root = tk.Tk()
@@ -48,51 +72,10 @@ canvas.create_window((0, 0), window=recipe_frame, anchor="nw")
 
 
 # Define the maximum height for the recipe frame
-MAX_FRAME_HEIGHT = 250  # Set the maximum height here
+MAX_FRAME_HEIGHT = 250
 
-# Sample data to dynamically populate the GUI (replace with data from an external source)
-recipes = [
-    {
-        "name": "Pizza",
-        "time": "1h, 20mins",
-        "serves": "2",
-        "ingredients_used": "7",
-        "ingredients_needed": "3",
-        "favourite": True
-    },
-    {
-        "name": "Fish & Chips",
-        "time": "1h, 45mins",
-        "serves": "2",
-        "ingredients_used": "5",
-        "ingredients_needed": "2",
-        "favourite": False
-    },
-    {
-        "name": "Veggie Stir Fry",
-        "time": "30mins",
-        "serves": "3",
-        "ingredients_used": "5",
-        "ingredients_needed": "4",
-        "favourite": True
-    },
-    {
-        "name": "Pasta Carbonara",
-        "time": "40mins",
-        "serves": "4",
-        "ingredients_used": "6",
-        "ingredients_needed": "4",
-        "favourite": False
-    },
-    {
-        "name": "Tacos",
-        "time": "20mins",
-        "serves": "2",
-        "ingredients_used": "4",
-        "ingredients_needed": "3",
-        "favourite": True
-    }
-]
+ingredients = ["apples","bananas","milk","butter","chicken","steak","carrots","yoghurt","ketchup"] #test data
+recipes = API.getRecipes.get_recipes_by_ingredients(ingredients)
 
 # Populate the frame with recipes
 for recipe in recipes:
@@ -107,28 +90,23 @@ for recipe in recipes:
     # Add recipe name, time, and serves information
     recipe_info = f"{recipe['name']}\n{recipe['time']} - Serves: {recipe['serves']}"
     info_label = tk.Label(recipe_frame_item, text=recipe_info, bg="#333333", fg="white", font=("Arial", 10), anchor="w", justify="left")
-    info_label.grid(row=0, column=1, sticky="w", padx=10, pady=5)
+    info_label.grid(row=0, column=1, padx=10, pady=5)
 
     # Add ingredients used/needed information
     ingredients_info = f"Ingredients Used: {recipe['ingredients_used']}\nIngredients Needed: {recipe['ingredients_needed']}"
     ingredients_label = tk.Label(recipe_frame_item, text=ingredients_info, bg="#333333", fg="white", font=("Arial", 10), anchor="w", justify="left")
-    ingredients_label.grid(row=1, column=1, sticky="w", padx=10, pady=5)
+    ingredients_label.grid(row=1, column=1, padx=10, pady=5)
 
-    # Add favourite icon (heart)
+    # Add clickable heart icon
     heart_color = "red" if recipe["favourite"] else "white"
-    heart_label = tk.Label(recipe_frame_item, text="♥", font=("Arial", 18), bg="#333333", fg=heart_color)
+    heart_label = tk.Label(recipe_frame_item, text="♥", font=("Arial", 18), bg="#333333", fg=heart_color, cursor="hand2")
     heart_label.grid(row=0, column=2, rowspan=2, padx=10, pady=10)
 
-# Function to adjust scroll region based on content height
-def update_scrollregion(event=None):
-    # Calculate the total height of the recipes and update the scroll region accordingly
-    total_height = sum(child.winfo_height() for child in recipe_frame.winfo_children())
-
-    # Ensure the recipe frame height doesn't exceed MAX_FRAME_HEIGHT
-    frame_height = min(total_height, MAX_FRAME_HEIGHT)
-
-    # Update the canvas scroll region with the new height of the frame
-    canvas.config(scrollregion=(0, 0, 0, frame_height))
+    # Use functools.partial to pass the current heart_label and recipe
+    heart_label.bind(
+        "<Button-1>",
+        functools.partial(toggle_favourite, heart_label=heart_label, recipe=recipe)
+    )
 
 # Call the function to update scroll region on window resize
 recipe_frame.bind("<Configure>", update_scrollregion)

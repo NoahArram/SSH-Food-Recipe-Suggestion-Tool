@@ -1,8 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
 import functools
-import API.getRecipes
-import Data
+import sys
+import os
+from API.getRecipes import get_recipes_by_ingredients
+from PIL import Image, ImageTk
+import requests
+from io import BytesIO
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Function to close the window
 def close_window():
@@ -29,6 +35,12 @@ def update_scrollregion(event=None):
     # Update the canvas scroll region with the new height of the frame
     canvas.config(scrollregion=(0, 0, 0, frame_height))
 
+def load_image_from_url(url):
+    response = requests.get(url)  # Get the image from the URL
+    img_data = BytesIO(response.content)  # Convert to BytesIO for PIL
+    img = Image.open(img_data)  # Open the image using PIL
+    return img
+
 # Initialise the main window
 root = tk.Tk()
 root.title("Recipe List")
@@ -45,10 +57,6 @@ style.configure('Select.TButton',
     font=('Helvetica', 10, 'bold'),
     borderwidth=0,
     relief='flat'
-)
-style.map('Select.TButton',
-    background=[('pressed', 'green'), ('active', '#6677ff')],
-    foreground=[('pressed', 'white'), ('active', 'white')]
 )
 
 top_frame = tk.Frame(root, bg="#4355ff", bd=2, relief="flat")
@@ -75,28 +83,38 @@ canvas.create_window((0, 0), window=recipe_frame, anchor="nw")
 MAX_FRAME_HEIGHT = 250
 
 ingredients = ["apples","bananas","milk","butter","chicken","steak","carrots","yoghurt","ketchup"] #test data
-recipes = API.getRecipes.get_recipes_by_ingredients(ingredients)
+recipes = get_recipes_by_ingredients(ingredients)
 
 # Populate the frame with recipes
-for recipe in recipes:
+for recipe in recipes.values():
+    #print(recipe)
     # Create a frame for each recipe
     recipe_frame_item = tk.Frame(recipe_frame, bg="#333333", bd=1, relief="solid")
     recipe_frame_item.pack(fill="x", pady=5)
 
-    # Add image placeholder
-    image_label = tk.Label(recipe_frame_item, text="🍴", font=("Arial", 24), bg="#333333", fg="white")
-    image_label.grid(row=0, column=0, rowspan=2, padx=10, pady=10)
+    try:
+        img = load_image_from_url(recipe[7])  # Open the image
+        img = img.resize((100, 100), Image.Resampling.LANCZOS)  # Resize to fit the card
+        profile_image = ImageTk.PhotoImage(img)
+        icon_label = tk.Label(recipe_frame_item, image=profile_image, bg="#f6f7fb")
+        icon_label.image = profile_image  # Prevent garbage collection
+    except Exception as e:
+        print("Error")
+        icon_label = tk.Label(recipe_frame_item, text="No Image", bg="#f6f7fb", fg="black", font=("Helvetica", 10, "bold"))
+
+    icon_label.grid(row=0, column=1, sticky="w", padx=10, pady=5)
 
     # Add recipe name, time, and serves information
-    recipe_info = f"{recipe['name']}\n{recipe['time']} - Serves: {recipe['serves']}"
+    recipe_info = f"{recipe[1]}\n{recipe[5]} - Serves: {recipe[6]}"
     info_label = tk.Label(recipe_frame_item, text=recipe_info, bg="#333333", fg="white", font=("Arial", 10), anchor="w", justify="left")
     info_label.grid(row=0, column=1, padx=10, pady=5)
 
     # Add ingredients used/needed information
-    ingredients_info = f"Ingredients Used: {recipe['ingredients_used']}\nIngredients Needed: {recipe['ingredients_needed']}"
+    ingredients_info = f"Ingredients Used: {recipe[3]}\nIngredients Needed: {recipe[2]}"
     ingredients_label = tk.Label(recipe_frame_item, text=ingredients_info, bg="#333333", fg="white", font=("Arial", 10), anchor="w", justify="left")
     ingredients_label.grid(row=1, column=1, padx=10, pady=5)
 
+    '''
     # Add clickable heart icon
     heart_color = "red" if recipe["favourite"] else "white"
     heart_label = tk.Label(recipe_frame_item, text="♥", font=("Arial", 18), bg="#333333", fg=heart_color, cursor="hand2")
@@ -107,6 +125,7 @@ for recipe in recipes:
         "<Button-1>",
         functools.partial(toggle_favourite, heart_label=heart_label, recipe=recipe)
     )
+    '''
 
 # Call the function to update scroll region on window resize
 recipe_frame.bind("<Configure>", update_scrollregion)
@@ -116,7 +135,7 @@ bottom_frame = tk.Frame(root, bg="#87CEFA")
 bottom_frame.pack(side="bottom", fill="x", pady=10)
 
 # Close button
-close_button = tk.Button(bottom_frame, text="Close", command=close_window, bg="#B0C4DE", width=10)
+close_button = ttk.Button(bottom_frame, text="Close", command=close_window, style="Select.TButton")
 close_button.pack()
 
 # Start the GUI loop

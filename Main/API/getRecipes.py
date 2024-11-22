@@ -1,6 +1,6 @@
 import http.client
 import json
-import APIKey
+from API import APIKey
 
 
 #Replace this with data pulled from database, using test data for now
@@ -69,4 +69,4 @@ def get_recipes_by_ingredients(ingredients):
     #return recipeList
     return ranked_recipes
 
-print(get_recipes_by_ingredients(ingredients))
+#print(get_recipes_by_ingredients(ingredients))

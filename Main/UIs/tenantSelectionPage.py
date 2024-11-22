@@ -1,67 +1,120 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
+from PIL import Image, ImageTk  # For handling non-native image formats
+
+# Tenant image paths and names
+tenant_images = [
+    "Main/UIs/images/pexels-anastasiya-gepp-654466-1462630.jpg",
+    "Main/UIs/images/pexels-hai-nguyen-825252-1699419.jpg",
+    "Main/UIs/images/pexels-tamhoang139-1007066.jpg",
+    "Main/UIs/images/pexels-timothypictures-2826131.jpg",
+]
+tenant_names = ["Megan", "Xiang", "Zhong", "Bradley"]
+
+# Global list to track selected tenants
+selected_tenants = []
+
+# Function to toggle tenant selection
+def toggle_selection(name, button):
+    if name in selected_tenants:
+        selected_tenants.remove(name)
+        button.state(['!pressed'])
+    else:
+        selected_tenants.append(name)
+        button.state(['pressed'])
 
 # Function to display the selected tenants
 def submitSelection():
-    selected_tenants = [tenant.get() for tenant in tenant_vars]
-    selected_names = [tenant_names[i] for i in range(len(selected_tenants)) if selected_tenants[i]]
-    messagebox.showinfo("Selection", f"Selected Tenants: {', '.join(selected_names) if selected_names else 'None'}")
+    messagebox.showinfo("Selection", f"Selected Tenants: {', '.join(selected_tenants) if selected_tenants else 'None'}")
 
 # Initialise the main window
 root = tk.Tk()
 root.title("Select Tenants")
-root.geometry("400x400")
-root.configure(bg="navy")
+root.geometry("800x400")
+root.configure(bg="#f6f7fb")
+
+# Create custom button style with rounded corners
+style = ttk.Style()
+style.theme_use('default')
+
+# Configure the style for select buttons
+style.configure('Select.TButton', 
+    background='#4355ff',
+    foreground='white',
+    font=('Helvetica', 10, 'bold'),
+    borderwidth=0,
+    relief='flat'
+)
+style.map('Select.TButton',
+    background=[('pressed', 'green'), ('active', '#6677ff')],
+    foreground=[('pressed', 'white'), ('active', 'white')]
+)
 
 # Top rectangle (with 'Select Tenants')
-top_frame = tk.Frame(root, bg="lightblue", bd=2, relief="flat")
-top_frame.pack(fill="x", side="top", pady=0)  # Using pack to make sure the top frame stays on top
+top_frame = tk.Frame(root, bg="#4355ff", bd=2, relief="flat")
+top_frame.pack(fill="x", side="top", pady=0)
 
-# Title label
-title_label = tk.Label(top_frame, text="Select Tenants", font=("Arial", 16), bg="lightblue", fg="black")
+# Title label with white text on blue background and sans-serif bold font
+title_label = tk.Label(top_frame, text="Select Tenants", font=("Helvetica", 16, "bold"), bg="#4355ff", fg="white")
 title_label.pack(expand=True)
 
-# Frame for tenant selection (this frame has a black background for the entire group of tenants)
-tenant_container_frame = tk.Frame(root, bg="black")
-tenant_container_frame.pack(fill="both", expand=True, padx=10, pady=90)  # Expand and fill window space
+# Main container frame to center the content
+main_container = tk.Frame(root, bg="#f6f7fb")
+main_container.pack(expand=True, fill="both")
 
-tenant_names = ["Tenant 1", "Tenant 2", "Tenant 3", "Tenant 4"]
-tenant_vars = []
+# Create a frame for tenant cards
+tenant_container_frame = tk.Frame(main_container, bg="#f6f7fb")
+tenant_container_frame.pack(expand=True)
 
 # Create tenant frames inside the container frame
 for i, name in enumerate(tenant_names):
     # Create a frame for each tenant inside the container frame
-    tenant_frame = tk.Frame(tenant_container_frame, bg="#1C1C1C", width=80, height=40)  # Initial height set to 40px
-    tenant_frame.grid(row=0, column=i, padx=5, pady=5, sticky="nsew")  # Use sticky to make them stretch in both directions
-    
-    # Add the image placeholder (circle icon)
-    icon_label = tk.Label(tenant_frame, text="👤", font=("Arial", 30), bg="#1C1C1C", fg="lightblue")
-    icon_label.pack(expand=True, fill="both", pady=2)  # Use fill and expand to make the icon resize
-    
-    # Tenant name label
-    name_label = tk.Label(tenant_frame, text=name, bg="#1C1C1C", fg="white", font=("Arial", 10))
-    name_label.pack(expand=True, fill="both", pady=2)  # Fill the frame with this label
-    
-    # Checkbox
-    var = tk.BooleanVar()
-    tenant_vars.append(var)
-    checkbox = tk.Checkbutton(tenant_frame, variable=var, bg="#1C1C1C", activebackground="#1C1C1C", fg="lightblue", highlightthickness=0)
-    checkbox.pack(expand=True, fill="both", pady=2)  # Expand the checkbox to resize
+    tenant_frame = tk.Frame(tenant_container_frame, bg="#f6f7fb", width=150, height=200)
+    tenant_frame.grid(row=0, column=i, padx=10, pady=10)
 
-# Configure grid layout for tenant container frame to allow resizing
-tenant_container_frame.grid_rowconfigure(0, weight=1)  # Allow the row to expand vertically
+    # Add the profile picture
+    try:
+        img = Image.open(tenant_images[i])  # Open the image
+        img = img.resize((100, 100), Image.Resampling.LANCZOS)  # Resize to fit the card
+        profile_image = ImageTk.PhotoImage(img)
+        icon_label = tk.Label(tenant_frame, image=profile_image, bg="#f6f7fb")
+        icon_label.image = profile_image  # Prevent garbage collection
+    except Exception as e:
+        icon_label = tk.Label(tenant_frame, text="No Image", bg="#f6f7fb", fg="black", font=("Helvetica", 10, "bold"))
+
+    icon_label.pack(expand=True, fill="both", pady=5)
+
+    # Tenant name label with sans-serif bold font
+    name_label = tk.Label(tenant_frame, text=name, bg="#f6f7fb", fg="black", font=("Helvetica", 12, "bold"))
+    name_label.pack(expand=True, fill="both", pady=5)
+
+    # Select button with toggle functionality using ttk.Button
+    select_button = ttk.Button(
+        tenant_frame, 
+        text="Select", 
+        style='Select.TButton', 
+        command=lambda n=name, btn=None: toggle_selection(n, btn)
+    )
+    select_button.pack(expand=True, fill="both", pady=5)
+    
+    # Store reference to button in the lambda to allow state change
+    select_button.configure(command=lambda n=name, btn=select_button: toggle_selection(n, btn))
+
+# Configure grid layout for centering tenants
+tenant_container_frame.grid_rowconfigure(0, weight=1)  # Allow vertical centering
 for i in range(len(tenant_names)):
-    tenant_container_frame.grid_columnconfigure(i, weight=1)  # Allow each column to expand horizontally
+    tenant_container_frame.grid_columnconfigure(i, weight=1)  # Allow horizontal distribution
 
 # Bottom rectangle (with buttons)
-bottom_frame = tk.Frame(root, bg="lightblue", bd=2, relief="flat")
-bottom_frame.pack(fill="x", side="bottom", pady=0)  # Using pack to make sure the bottom frame stays at the bottom
+bottom_frame = tk.Frame(root, bg="#eeeff4", bd=2, relief="flat")
+bottom_frame.pack(fill="x", side="bottom", pady=0)
 
-# Buttons for Cancel and OK
-cancel_button = tk.Button(bottom_frame, text="Cancel", command=root.quit, bg="#B0C4DE", width=10)
+# Buttons for Cancel and OK with sans-serif bold font
+cancel_button = ttk.Button(bottom_frame, text="Cancel", command=root.quit, style='Select.TButton')
 cancel_button.pack(side="left", padx=10, pady=10)
 
-ok_button = tk.Button(bottom_frame, text="OK", command=submitSelection, bg="#B0C4DE", width=10)
+ok_button = ttk.Button(bottom_frame, text="OK", command=submitSelection, style='Select.TButton')
 ok_button.pack(side="right", padx=10, pady=10)
 
 # Start the GUI loop

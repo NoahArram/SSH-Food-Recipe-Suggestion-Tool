@@ -1,6 +1,6 @@
 import http.client
 import json
-import APIKey
+from API import APIKey
 
 def get_recipe_info(recipeID):
     conn = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")

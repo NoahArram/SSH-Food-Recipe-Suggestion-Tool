@@ -8,8 +8,9 @@ from PyQt5.QtGui import QPixmap
 import requests
 from io import BytesIO
 
-from API import APIKey  # Ensure APIKey contains your valid key
-from API import get_recipes_by_ingredients
+
+from API import getRecipeInfo
+from API import getRecipes
 
 # Ensure the parent directory is in the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -125,7 +126,7 @@ recipes = {
 ingredients = ["apples", "bananas", "milk", "butter"]
 
 # Call the function and print the results
-recipes = get_recipes_by_ingredients(ingredients)
+recipes = getRecipes.get_recipes_by_ingredients(ingredients)
 print("Ranked Recipes:")
 for rank, recipe in recipes.items():
     print(f"Rank: {rank}")

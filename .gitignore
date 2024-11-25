@@ -1,5 +1,6 @@
 
 Main/API/APIKey.py
+Main/API/__pycache__/APIKey.cpython-39.pyc
 Main/API/__pycache__/APIKey.cpython-310.pyc
 node_modules
 
@@ -9,3 +10,4 @@ Main/API/__pycache__/__init__.cpython-310.pyc
 Main/API/__pycache__/getRecipes.cpython-310.pyc
 Main/UIs/__pycache__/recipeListPage.cpython-310.pyc
 Main/UIs/__pycache__/__init__.cpython-310.pyc
+Main/UIs/__pycache__/tenantSelectionPage.cpython-310.pyc

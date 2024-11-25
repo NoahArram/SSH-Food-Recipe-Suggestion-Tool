@@ -5,3 +5,7 @@ node_modules
 
 package-lock.json
 package.json
+Main/API/__pycache__/__init__.cpython-310.pyc
+Main/API/__pycache__/getRecipes.cpython-310.pyc
+Main/UIs/__pycache__/recipeListPage.cpython-310.pyc
+Main/UIs/__pycache__/__init__.cpython-310.pyc

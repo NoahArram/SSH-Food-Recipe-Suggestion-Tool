@@ -1,6 +1,6 @@
 import http.client
 import json
-import APIKey
+from API import APIKey
 
 
 #Replace this with data pulled from database, using test data for now
@@ -13,7 +13,7 @@ def get_recipes_by_ingredients(ingredients):
     recipeList = []
     numOfResults = 10
 
-    conn1 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+    conn1 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com", timeout=300)
 
     headers = {
         'x-rapidapi-key': APIKey.key,
@@ -24,14 +24,23 @@ def get_recipes_by_ingredients(ingredients):
     for i in ingredients:
         requestUrl += i + "%2C"
 
-    requestUrl = requestUrl[:-3] + "&number="+str(numOfResults)
+    requestUrl = requestUrl[:-3] + "&number=" + str(numOfResults)
     conn1.request("GET", requestUrl, headers=headers)
 
     res = conn1.getresponse()
     data = res.read()
 
-    ingredientSearchResult = data.decode("utf-8")
-    ingredientSearchResultJSON = json.loads(ingredientSearchResult)
+    if res.status != 200:
+        print(f"Error: Received status code {res.status}")
+        print("Response:", data.decode())
+        return {}
+
+    try:
+        ingredientSearchResultJSON = json.loads(data.decode())
+    except json.JSONDecodeError as e:
+        print("Error decoding JSON:", e)
+        print("Response:", data.decode())
+        return {}
 
     conn2 = http.client.HTTPSConnection("spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
 

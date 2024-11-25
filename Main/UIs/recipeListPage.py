@@ -9,7 +9,6 @@ import requests
 from io import BytesIO
 
 
-from API import getRecipeInfo
 from API import getRecipes
 
 # Ensure the parent directory is in the Python path

@@ -1,3 +1,4 @@
+# recipeListPage.py
 import sys
 import os
 from PyQt5.QtWidgets import (
@@ -8,6 +9,8 @@ from PyQt5.QtGui import QPixmap
 import requests
 from io import BytesIO
 
+# Import RecipeInstructionsPage
+from UIs.recipeInfoPage import RecipeInstructionsPage
 
 from API import getRecipes
 
@@ -27,11 +30,14 @@ def load_image_from_url(url):
         return None
 
 class RecipeApp(QMainWindow):
-    def __init__(self, recipes):
-        super().__init__()
+    def __init__(self, recipes, parent=None):
+        super().__init__(parent)
         self.setWindowTitle("Recipe List")
         self.setGeometry(100, 100, 800, 600)
+        self.recipes = recipes
+        self.initUI()
 
+    def initUI(self):
         # Main layout
         main_layout = QVBoxLayout()
         container = QWidget()
@@ -55,7 +61,7 @@ class RecipeApp(QMainWindow):
         scroll_area.setWidget(scroll_content)
 
         # Populate the recipes
-        for recipe in recipes.values():
+        for recipe in self.recipes.values():
             recipe_frame = QFrame()
             recipe_frame.setStyleSheet("background-color: #333333; border: 1px solid #444;")
             recipe_frame.setFrameShape(QFrame.StyledPanel)
@@ -85,18 +91,51 @@ class RecipeApp(QMainWindow):
             ingredients_label.setStyleSheet("color: white; font-size: 10pt;")
             info_layout.addWidget(ingredients_label)
 
+            # Add a button to view recipe details
+            view_button = QPushButton("View Recipe")
+            view_button.setStyleSheet("background-color: #4355ff; color: white;")
+            view_button.clicked.connect(lambda checked, r_id=recipe[0]: self.open_recipe_info(r_id))
+            info_layout.addWidget(view_button)
+
             recipe_layout.addLayout(info_layout)
             scroll_layout.addWidget(recipe_frame)
 
-        # Close button
+        # Add the back and close buttons
+        button_layout = QHBoxLayout()
+        back_button = QPushButton("Back")
+        back_button.setStyleSheet("background-color: #4355ff; color: white; font-size: 10pt; font-weight: bold;")
+        back_button.clicked.connect(self.go_back)
+        button_layout.addWidget(back_button)
+        
         close_button = QPushButton("Close")
         close_button.setStyleSheet("background-color: #4355ff; color: white; font-size: 10pt; font-weight: bold;")
-        close_button.clicked.connect(self.close)
-        main_layout.addWidget(close_button)
+        close_button.clicked.connect(self.close_application)
+        button_layout.addWidget(close_button)
+        
+        main_layout.addLayout(button_layout)
+
+    def go_back(self):
+        """Return to the tenant selection page."""
+        self.close()
+        if self.parent() is not None:
+            self.parent().show()
+
+    def close_application(self):
+        """Close the application."""
+        self.close()
+        QApplication.instance().quit()
+
+    def open_recipe_info(self, recipe_id):
+        """Open the recipe information page."""
+        from API import getRecipeInfo
+        recipe_info = getRecipeInfo.get_recipe_info(recipe_id)
+        self.recipeInfoWindow = RecipeInstructionsPage(recipe_info, parent=self)
+        self.recipeInfoWindow.show()
+        self.hide()  # Hide the current window instead of closing it
 
 # recipes = get_recipes_by_ingredients(ingredients)
 
-
+'''
 ingredients = ["apples", "bananas", "milk", "butter"]
 
 # Call the function and print the results
@@ -113,9 +152,4 @@ for rank, recipe in recipes.items():
     print(f"Servings: {recipe[6]}")
     print(f"Image URL: {recipe[7]}")
     print()
-
-# Run the application
-app = QApplication(sys.argv)
-window = RecipeApp(recipes)
-window.show()
-sys.exit(app.exec_())
+'''

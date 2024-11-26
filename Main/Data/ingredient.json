@@ -6,7 +6,7 @@
                 "Eggs",
                 "Butter"
             ],
-            "Owner": "Tenant 1"
+            "Owner": "Megan"
         },
         {
             "ingredients": [
@@ -14,14 +14,14 @@
                 "Chicken",
                 "Milk"
             ],
-            "Owner": "Tenant 2"
+            "Owner": "Xiang"
         },
         {
             "ingredients": [
                 "Carrots",
                 "Steak"
             ],
-            "Owner": "Tenant 3"
+            "Owner": "Zhong"
         },
         {
             "ingredients": [
@@ -29,7 +29,7 @@
                 "Yoghurt",
                 "Cheese"
             ],
-            "Owner": "Tenant 4"
+            "Owner": "Bradley"
         }
     ]
 }

@@ -31,11 +31,15 @@ def get_recipe_info(recipeID):
     
     recipeInfo.append(ingredients)
     recipeInfo.append(instructions)
+    recipeInfo.append(recipeDataJSON["readyInMinutes"])
+    recipeInfo.append(recipeDataJSON["servings"])
+    recipeInfo.append(recipeDataJSON["title"])
+    recipeInfo.append(recipeDataJSON["image"])
     
     return recipeInfo
 
 #debug
-#print(get_recipe_info(875447))
+print(get_recipe_info(875447))
 
 
 

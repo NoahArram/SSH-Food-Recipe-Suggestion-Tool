@@ -1,6 +1,6 @@
 import http.client
 import json
-import APIKey
+from API import APIKey
 
 
 #Replace this with data pulled from database, using test data for now

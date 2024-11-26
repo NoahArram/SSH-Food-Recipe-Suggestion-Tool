@@ -29,11 +29,13 @@ def load_image_from_url(url):
 
 
 class RecipeInstructionsPage(QMainWindow):
-    def __init__(self, recipe):
-        super().__init__()
-        self.setWindowTitle("Recipe Instructions")
-        self.setGeometry(100, 100, 800, 600)
+    def __init__(self, recipe, parent=None):
+        super().__init__(parent)
+        self.recipe = recipe
+        self.parent_window = parent
+        self.initUI()
 
+    def initUI(self):
         # Main layout
         main_layout = QVBoxLayout()
         container = QWidget()
@@ -41,7 +43,7 @@ class RecipeInstructionsPage(QMainWindow):
         self.setCentralWidget(container)
 
         # Title
-        title_label = QLabel(recipe[4])  # Assuming recipe[4] is the title
+        title_label = QLabel(self.recipe[4])  # Assuming recipe[4] is the title
         title_label.setStyleSheet("font-size: 16pt; font-weight: bold; color: white; background-color: #4355ff; padding: 10px;")
         title_label.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(title_label)
@@ -69,7 +71,7 @@ class RecipeInstructionsPage(QMainWindow):
         metadata_layout.setSpacing(10)
 
         # Load the image
-        pixmap = load_image_from_url(recipe[5])  # Assuming recipe[5] is the image URL
+        pixmap = load_image_from_url(self.recipe[5])  # Assuming recipe[5] is the image URL
         if pixmap and not pixmap.isNull():
             image_label = QLabel()
             image_label.setPixmap(pixmap.scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation))
@@ -87,12 +89,12 @@ class RecipeInstructionsPage(QMainWindow):
         info_layout.setSpacing(5)
         info_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
-        time_label = QLabel(f"Cooking Time: {recipe[2]} minutes")  # Assuming recipe[2] is time in minutes
+        time_label = QLabel(f"Cooking Time: {self.recipe[2]} minutes")  # Assuming recipe[2] is time in minutes
         time_label.setStyleSheet("color: white; font-size: 12pt;")
         time_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         info_layout.addWidget(time_label)
 
-        servings_label = QLabel(f"Servings: {recipe[3]}")  # Assuming recipe[3] is servings
+        servings_label = QLabel(f"Servings: {self.recipe[3]}")  # Assuming recipe[3] is servings
         servings_label.setStyleSheet("color: white; font-size: 12pt;")
         servings_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         info_layout.addWidget(servings_label)
@@ -114,7 +116,7 @@ class RecipeInstructionsPage(QMainWindow):
         ingredients_title.setAlignment(Qt.AlignLeft)
         ingredients_layout.addWidget(ingredients_title)
 
-        for ingredient in recipe[0]:  # Assuming recipe[0] is a list of ingredients
+        for ingredient in self.recipe[0]:  # Assuming recipe[0] is a list of ingredients
             ingredient_label = QLabel(ingredient)
             ingredient_label.setStyleSheet("color: white; font-size: 10pt;")
             ingredient_label.setWordWrap(True)
@@ -137,7 +139,7 @@ class RecipeInstructionsPage(QMainWindow):
         instructions_title.setAlignment(Qt.AlignLeft)
         instructions_layout.addWidget(instructions_title)
 
-        for i, step in enumerate(recipe[1], start=1):  # Assuming recipe[1] is a list of steps
+        for i, step in enumerate(self.recipe[1], start=1):  # Assuming recipe[1] is a list of steps
             step_label = QLabel(f"{i}. {step}")
             step_label.setStyleSheet("color: white; font-size: 10pt;")
             step_label.setWordWrap(True)
@@ -148,18 +150,34 @@ class RecipeInstructionsPage(QMainWindow):
 
         # Back button
         back_button = QPushButton("Back")
-        back_button.setStyleSheet("background-color: #4355ff; color: white; font-size: 12pt; font-weight: bold; padding: 10px;")
-        back_button.clicked.connect(self.close)
-        main_layout.addWidget(back_button, alignment=Qt.AlignCenter)
+        back_button.setStyleSheet(
+            "background-color: #4355ff; color: white; font-size: 12pt; font-weight: bold; padding: 10px;"
+        )
+        back_button.clicked.connect(self.go_back)
+
+        # Center the button at the bottom
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(back_button)
+        button_layout.addStretch()
+        main_layout.addLayout(button_layout)
+
+    def go_back(self):
+        """Return to the recipe list."""
+        self.close()
+        if self.parent_window is not None:
+            self.parent_window.show()
+
+    def get_recipes(self):
+        """Retrieve recipes again or pass them as needed."""
+        # Implement a method to retrieve or pass the recipes
+        # For this example, we can return an empty dictionary or re-fetch
+        return {}
 
 
 # Test the application with dummy data if running directly
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
-
-    
-
     window = RecipeInstructionsPage(getRecipeInfo.get_recipe_info(875447))
     window.show()
     sys.exit(app.exec_())

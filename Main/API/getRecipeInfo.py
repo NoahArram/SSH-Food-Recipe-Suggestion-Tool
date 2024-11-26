@@ -38,8 +38,4 @@ def get_recipe_info(recipeID):
     
     return recipeInfo
 
-#debug
-print(get_recipe_info(875447))
-
-
 

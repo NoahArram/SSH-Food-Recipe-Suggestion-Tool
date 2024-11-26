@@ -66,7 +66,7 @@ def get_recipes_by_ingredients(ingredients):
     bulkRecipeInfoJSON = json.loads(data.decode("utf-8"))
     #print(bulkRecipeInfoJSON)
     for i in bulkRecipeInfoJSON:
-        recipeList[bulkRecipeInfoJSON.index(i)].append(i["preparationMinutes"])
+        recipeList[bulkRecipeInfoJSON.index(i)].append(i["readyInMinutes"])
         recipeList[bulkRecipeInfoJSON.index(i)].append(i["servings"])
         recipeList[bulkRecipeInfoJSON.index(i)].append(i["image"])
         

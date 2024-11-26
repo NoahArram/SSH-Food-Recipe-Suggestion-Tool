@@ -62,8 +62,8 @@ class RecipeApp(QMainWindow):
             recipe_layout = QHBoxLayout(recipe_frame)
 
             # Image
-            if recipe['image']:
-                pixmap = load_image_from_url(recipe['image'])
+            if recipe[7]:
+                pixmap = load_image_from_url(recipe[7])
                 if pixmap:
                     image_label = QLabel()
                     image_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
@@ -75,12 +75,12 @@ class RecipeApp(QMainWindow):
 
             # Recipe info
             info_layout = QVBoxLayout()
-            recipe_info = f"{recipe['name']}\n{recipe['time']} - Serves: {recipe['servings']}"
+            recipe_info = f"{recipe[1]}\nTime: {recipe[5]} minutes - Serves: {recipe[6]}"
             info_label = QLabel(recipe_info)
             info_label.setStyleSheet("color: white; font-size: 10pt;")
             info_layout.addWidget(info_label)
 
-            ingredients_info = f"Ingredients Used: {', '.join(recipe['ingredients_used'])}\nIngredients Needed: {', '.join(recipe['ingredients_needed'])}"
+            ingredients_info = "Ingredients Used:"+str(recipe[3])+"\nIngredients Needed:" +str(recipe[2])
             ingredients_label = QLabel(ingredients_info)
             ingredients_label.setStyleSheet("color: white; font-size: 10pt;")
             info_layout.addWidget(ingredients_label)
@@ -95,32 +95,7 @@ class RecipeApp(QMainWindow):
         main_layout.addWidget(close_button)
 
 # recipes = get_recipes_by_ingredients(ingredients)
-recipes = {
-    1: {
-        'name': 'Apple Pie',
-        'time': '45 minutes',
-        'servings': 4,
-        'ingredients_used': ['apples', 'butter'],
-        'ingredients_needed': ['sugar', 'flour'],
-        'image': 'https://picsum.photos/200/300'
-    },
-    2: {
-        'name': 'Banana Smoothie',
-        'time': '10 minutes',
-        'servings': 2,
-        'ingredients_used': ['bananas', 'milk', 'yoghurt'],
-        'ingredients_needed': [],
-        'image': 'https://picsum.photos/200/300'
-    },
-    3: {
-        'name': 'Chicken Curry',
-        'time': '60 minutes',
-        'servings': 6,
-        'ingredients_used': ['chicken', 'carrots'],
-        'ingredients_needed': ['spices', 'onions'],
-        'image': 'https://picsum.photos/200/300'
-    }
-}
+
 
 ingredients = ["apples", "bananas", "milk", "butter"]
 

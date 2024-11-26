@@ -59,10 +59,10 @@ class TenantSelectionApp(QMainWindow):
 
         # Tenant data (images and names)
         tenant_images = [
-            "Main/UIs/images/pexels-anastasiya-gepp-654466-1462630.jpg",
-            "Main/UIs/images/pexels-hai-nguyen-825252-1699419.jpg",
-            "Main/UIs/images/pexels-tamhoang139-1007066.jpg",
-            "Main/UIs/images/pexels-timothypictures-2826131.jpg",
+            "UIs/images/pexels-anastasiya-gepp-654466-1462630.jpg",
+            "UIs/images/pexels-hai-nguyen-825252-1699419.jpg",
+            "UIs/images/pexels-tamhoang139-1007066.jpg",
+            "UIs/images/pexels-timothypictures-2826131.jpg",
         ]
         tenant_names = ["Megan", "Xiang", "Zhong", "Bradley"]
 

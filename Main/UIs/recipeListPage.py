@@ -13,10 +13,8 @@ from UIs.recipeInfoPage import RecipeInstructionsPage
 
 from API import getRecipes
 
-# Ensure the parent directory is in the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Function to load an image from a URL
 def load_image_from_url(url):
     try:
         response = requests.get(url)
@@ -49,20 +47,16 @@ class RecipeApp(QMainWindow):
         title_label.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(title_label)
 
-        # Scroll area for recipes
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setStyleSheet("background-color: #f6f7fb;")
         main_layout.addWidget(scroll_area)
 
-        # Scroll area content
         scroll_content = QWidget()
-        scroll_layout = QVBoxLayout(scroll_content)  # Use QVBoxLayout for one recipe per row
+        scroll_layout = QVBoxLayout(scroll_content)  
         scroll_area.setWidget(scroll_content)
 
-        # Populate the recipes
         for recipe in self.recipes.values():
-            # Recipe card (Frame)
             recipe_frame = QFrame()
             recipe_frame.setStyleSheet("""
                 background-color: #444444;
@@ -70,18 +64,17 @@ class RecipeApp(QMainWindow):
                 border-radius: 10px;
                 padding: 10px;
             """)
-            recipe_frame.setFixedWidth(900)  # Set fixed width for the card
+            recipe_frame.setFixedWidth(900)  
             recipe_layout = QHBoxLayout(recipe_frame)
             recipe_layout.setContentsMargins(10, 10, 10, 10)
             recipe_layout.setSpacing(15)
 
-            # Image
             if recipe[7]:
                 pixmap = load_image_from_url(recipe[7])
                 if pixmap:
                     image_label = QLabel()
                     image_label.setPixmap(pixmap.scaled(300, 300, Qt.KeepAspectRatio))
-                    image_label.setStyleSheet("border: none;")  # Remove border for image
+                    image_label.setStyleSheet("border: none;")  
 
                     recipe_layout.addWidget(image_label)
                 else:
@@ -89,7 +82,6 @@ class RecipeApp(QMainWindow):
                     image_label.setStyleSheet("color: white; font-weight: bold;")
                     recipe_layout.addWidget(image_label)
 
-            # Recipe info
             info_layout = QVBoxLayout()
             recipe_title = QLabel(recipe[1])
             recipe_title.setStyleSheet("color: white; font-size: 14pt; font-weight: bold;")
@@ -105,7 +97,6 @@ class RecipeApp(QMainWindow):
             ingredients_label.setStyleSheet("color: white; font-size: 10pt;")
             info_layout.addWidget(ingredients_label)
 
-            # Add "View Recipe" button
             view_button = QPushButton("View Recipe")
             view_button.setProperty("clicked", False)
             view_button.setFixedWidth(300)
@@ -119,7 +110,7 @@ class RecipeApp(QMainWindow):
                     padding: 5px 10px;
                 }
                 QPushButton[clicked="true"] {
-                    background-color: green;
+                    /* implement turn green button logic here*/
                 }
             """)
             view_button.clicked.connect(lambda checked, r_id=recipe[0]: self.on_view_button_clicked(r_id, view_button))

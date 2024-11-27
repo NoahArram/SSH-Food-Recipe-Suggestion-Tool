@@ -14,9 +14,9 @@ def load_image_from_url(url):
     try:
         if not url:
             print("Image URL is empty")
-            return QPixmap("default_image.png")  # Use a placeholder image if URL is empty
+            return QPixmap("default_image.png")  # still need to edit this part
         response = requests.get(url, timeout=5)
-        response.raise_for_status()  # Raise an exception for HTTP errors
+        response.raise_for_status()  
         img_data = BytesIO(response.content)
         pixmap = QPixmap()
         if not pixmap.loadFromData(img_data.getvalue()):
@@ -33,6 +33,7 @@ class RecipeInstructionsPage(QMainWindow):
         super().__init__(parent)
         self.recipe = recipe
         self.parent_window = parent
+        self.setGeometry(100, 100, 1000, 600)  
         self.initUI()
 
     def initUI(self):
@@ -42,18 +43,18 @@ class RecipeInstructionsPage(QMainWindow):
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
-        # Title
-        title_label = QLabel(self.recipe[4])  # Assuming recipe[4] is the title
-        title_label.setStyleSheet("font-size: 16pt; font-weight: bold; color: white; background-color: #4355ff; padding: 10px;")
-        title_label.setAlignment(Qt.AlignCenter)
+        title_label = QLabel(self.recipe[4])  
+        title_label.setStyleSheet(
+            "font-size: 18pt; font-weight: bold; color: white; background-color: #4355ff; padding: 10px; margin: 0px;"
+        )
+        title_label.setAlignment(Qt.AlignLeft)
         main_layout.addWidget(title_label)
 
-        # Scrollable area for content
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
+        scroll_area.setStyleSheet("background-color: #333333; border: none;")
         main_layout.addWidget(scroll_area)
 
-        # Scrollable content
         scroll_content = QWidget()
         scroll_area.setWidget(scroll_content)
 
@@ -61,58 +62,43 @@ class RecipeInstructionsPage(QMainWindow):
         scroll_layout.setContentsMargins(0, 0, 0, 0)
         scroll_layout.setSpacing(10)
 
-        # Recipe metadata (image, time, and servings)
         metadata_frame = QFrame()
-        metadata_frame.setStyleSheet("background-color: #333333; border: 1px solid #444;")
-        metadata_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-
+        metadata_frame.setStyleSheet("background-color: #444444; border: none; border-radius: 10px;")
         metadata_layout = QHBoxLayout(metadata_frame)
         metadata_layout.setContentsMargins(10, 10, 10, 10)
-        metadata_layout.setSpacing(10)
+        metadata_layout.setSpacing(15)
 
-        # Load the image
         pixmap = load_image_from_url(self.recipe[5])  # Assuming recipe[5] is the image URL
+        image_label = QLabel()
         if pixmap and not pixmap.isNull():
-            image_label = QLabel()
             image_label.setPixmap(pixmap.scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-            image_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         else:
-            image_label = QLabel("No Image")
+            image_label.setText("No Image")
             image_label.setStyleSheet("color: white; font-weight: bold;")
-            image_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
-        image_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        image_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         metadata_layout.addWidget(image_label)
 
-        # Time and Servings
         info_layout = QVBoxLayout()
-        info_layout.setContentsMargins(0, 0, 0, 0)
         info_layout.setSpacing(5)
-        info_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
-        time_label = QLabel(f"Cooking Time: {self.recipe[2]} minutes")  # Assuming recipe[2] is time in minutes
+        time_label = QLabel(f"<b>Cooking Time:</b> {self.recipe[2]} minutes")  
         time_label.setStyleSheet("color: white; font-size: 12pt;")
-        time_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         info_layout.addWidget(time_label)
 
-        servings_label = QLabel(f"Servings: {self.recipe[3]}")  # Assuming recipe[3] is servings
+        servings_label = QLabel(f"<b>Servings:</b> {self.recipe[3]}")  
         servings_label.setStyleSheet("color: white; font-size: 12pt;")
-        servings_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         info_layout.addWidget(servings_label)
 
         metadata_layout.addLayout(info_layout)
         scroll_layout.addWidget(metadata_frame)
 
-        # Ingredients
         ingredients_frame = QFrame()
-        ingredients_frame.setStyleSheet("background-color: #1C1C1C; border: 1px solid #444;")
-        ingredients_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-
+        ingredients_frame.setStyleSheet("background-color: #1C1C1C; border: none; border-radius: 10px;")
         ingredients_layout = QVBoxLayout(ingredients_frame)
         ingredients_layout.setContentsMargins(10, 10, 10, 10)
-        ingredients_layout.setSpacing(5)
 
         ingredients_title = QLabel("Ingredients")
-        ingredients_title.setStyleSheet("font-size: 14pt; font-weight: bold; color: white;")
+        ingredients_title.setStyleSheet("font-size: 14pt; font-weight: bold; color: white; margin-bottom: 10px;")
         ingredients_title.setAlignment(Qt.AlignLeft)
         ingredients_layout.addWidget(ingredients_title)
 
@@ -120,22 +106,18 @@ class RecipeInstructionsPage(QMainWindow):
             ingredient_label = QLabel(ingredient)
             ingredient_label.setStyleSheet("color: white; font-size: 10pt;")
             ingredient_label.setWordWrap(True)
-            ingredient_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
             ingredients_layout.addWidget(ingredient_label)
 
         scroll_layout.addWidget(ingredients_frame)
 
         # Instructions
         instructions_frame = QFrame()
-        instructions_frame.setStyleSheet("background-color: #1C1C1C; border: 1px solid #444;")
-        instructions_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-
+        instructions_frame.setStyleSheet("background-color: #1C1C1C; border: none; border-radius: 10px;")
         instructions_layout = QVBoxLayout(instructions_frame)
         instructions_layout.setContentsMargins(10, 10, 10, 10)
-        instructions_layout.setSpacing(5)
 
         instructions_title = QLabel("Instructions")
-        instructions_title.setStyleSheet("font-size: 14pt; font-weight: bold; color: white;")
+        instructions_title.setStyleSheet("font-size: 14pt; font-weight: bold; color: white; margin-bottom: 10px;")
         instructions_title.setAlignment(Qt.AlignLeft)
         instructions_layout.addWidget(instructions_title)
 
@@ -143,7 +125,6 @@ class RecipeInstructionsPage(QMainWindow):
             step_label = QLabel(f"{i}. {step}")
             step_label.setStyleSheet("color: white; font-size: 10pt;")
             step_label.setWordWrap(True)
-            step_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
             instructions_layout.addWidget(step_label)
 
         scroll_layout.addWidget(instructions_frame)
@@ -151,16 +132,22 @@ class RecipeInstructionsPage(QMainWindow):
         # Back button
         back_button = QPushButton("Back")
         back_button.setStyleSheet(
-            "background-color: #4355ff; color: white; font-size: 12pt; font-weight: bold; padding: 10px;"
+            "background-color: #4355ff; color: white; font-size: 12pt; font-weight: bold; padding: 10px; border-radius: 5px;"
         )
         back_button.clicked.connect(self.go_back)
 
-        # Center the button at the bottom
         button_layout = QHBoxLayout()
         button_layout.addStretch()
         button_layout.addWidget(back_button)
         button_layout.addStretch()
         main_layout.addLayout(button_layout)
+
+    def go_back(self):
+        """Return to the recipe list."""
+        self.close()
+        if self.parent_window is not None:
+            self.parent_window.show()
+
 
     def go_back(self):
         """Return to the recipe list."""

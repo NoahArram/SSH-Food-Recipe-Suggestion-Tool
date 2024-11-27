@@ -160,6 +160,29 @@ class RecipeInstructionsPage(QMainWindow):
         # Implement a method to retrieve or pass the recipes
         # For this example, we can return an empty dictionary or re-fetch
         return {}
+        back_button.setStyleSheet(
+            "background-color: #4355ff; color: white; font-size: 12pt; font-weight: bold; padding: 10px;"
+        )
+        back_button.clicked.connect(self.go_back)
+
+        # Center the button at the bottom
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(back_button)
+        button_layout.addStretch()
+        main_layout.addLayout(button_layout)
+
+    def go_back(self):
+        """Return to the recipe list."""
+        self.close()
+        if self.parent_window is not None:
+            self.parent_window.show()
+
+    def get_recipes(self):
+        """Retrieve recipes again or pass them as needed."""
+        # Implement a method to retrieve or pass the recipes
+        # For this example, we can return an empty dictionary or re-fetch
+        return {}
 
 
 # Test the application with dummy data if running directly

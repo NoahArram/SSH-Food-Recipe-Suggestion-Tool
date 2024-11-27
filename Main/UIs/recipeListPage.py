@@ -1,8 +1,7 @@
-# recipeListPage.py
 import sys
 import os
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QScrollArea, QWidget, QFrame
+    QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QScrollArea, QWidget, QFrame, QGridLayout
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
@@ -33,7 +32,7 @@ class RecipeApp(QMainWindow):
     def __init__(self, recipes, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Recipe List")
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(100, 100, 1000, 600)
         self.recipes = recipes
         self.initUI()
 
@@ -46,33 +45,44 @@ class RecipeApp(QMainWindow):
 
         # Title
         title_label = QLabel("Recipe List")
-        title_label.setStyleSheet("font-size: 16pt; font-weight: bold; color: white; background-color: #4355ff;")
+        title_label.setStyleSheet("font-size: 24pt; font-weight: bold; color: white; background-color: #4355ff; padding: 10px; border-radius: 10px;")
         title_label.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(title_label)
 
         # Scroll area for recipes
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
+        scroll_area.setStyleSheet("background-color: #f6f7fb;")
         main_layout.addWidget(scroll_area)
 
         # Scroll area content
         scroll_content = QWidget()
-        scroll_layout = QVBoxLayout(scroll_content)
+        scroll_layout = QVBoxLayout(scroll_content)  # Use QVBoxLayout for one recipe per row
         scroll_area.setWidget(scroll_content)
 
         # Populate the recipes
         for recipe in self.recipes.values():
+            # Recipe card (Frame)
             recipe_frame = QFrame()
-            recipe_frame.setStyleSheet("background-color: #333333; border: 1px solid #444;")
-            recipe_frame.setFrameShape(QFrame.StyledPanel)
+            recipe_frame.setStyleSheet("""
+                background-color: #444444;
+                border: 1px solid #555;
+                border-radius: 10px;
+                padding: 10px;
+            """)
+            recipe_frame.setFixedWidth(900)  # Set fixed width for the card
             recipe_layout = QHBoxLayout(recipe_frame)
+            recipe_layout.setContentsMargins(10, 10, 10, 10)
+            recipe_layout.setSpacing(15)
 
             # Image
             if recipe[7]:
                 pixmap = load_image_from_url(recipe[7])
                 if pixmap:
                     image_label = QLabel()
-                    image_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
+                    image_label.setPixmap(pixmap.scaled(300, 300, Qt.KeepAspectRatio))
+                    image_label.setStyleSheet("border: none;")  # Remove border for image
+
                     recipe_layout.addWidget(image_label)
                 else:
                     image_label = QLabel("No Image")
@@ -81,38 +91,98 @@ class RecipeApp(QMainWindow):
 
             # Recipe info
             info_layout = QVBoxLayout()
-            recipe_info = f"{recipe[1]}\nTime: {recipe[5]} minutes - Serves: {recipe[6]}"
-            info_label = QLabel(recipe_info)
-            info_label.setStyleSheet("color: white; font-size: 10pt;")
-            info_layout.addWidget(info_label)
+            recipe_title = QLabel(recipe[1])
+            recipe_title.setStyleSheet("color: white; font-size: 14pt; font-weight: bold;")
+            info_layout.addWidget(recipe_title)
 
-            ingredients_info = "Ingredients Used:"+str(recipe[3])+"\nIngredients Needed:" +str(recipe[2])
+            recipe_details = f"Time: {recipe[5]} minutes - Serves: {recipe[6]}"
+            details_label = QLabel(recipe_details)
+            details_label.setStyleSheet("color: white; font-size: 12pt;")
+            info_layout.addWidget(details_label)
+
+            ingredients_info = "Ingredients Used:" + str(recipe[3]) + "\nIngredients Needed:" + str(recipe[2])
             ingredients_label = QLabel(ingredients_info)
             ingredients_label.setStyleSheet("color: white; font-size: 10pt;")
             info_layout.addWidget(ingredients_label)
 
-            # Add a button to view recipe details
+            # Add "View Recipe" button
             view_button = QPushButton("View Recipe")
-            view_button.setStyleSheet("background-color: #4355ff; color: white;")
-            view_button.clicked.connect(lambda checked, r_id=recipe[0]: self.open_recipe_info(r_id))
-            info_layout.addWidget(view_button)
+            view_button.setProperty("clicked", False)
+            view_button.setFixedWidth(300)
+            view_button.setStyleSheet("""
+                QPushButton {
+                    background-color: #4355ff;
+                    color: white;
+                    font-size: 12pt;
+                    font-weight: bold;
+                    border-radius: 5px;
+                    padding: 5px 10px;
+                }
+                QPushButton[clicked="true"] {
+                    background-color: green;
+                }
+            """)
+            view_button.clicked.connect(lambda checked, r_id=recipe[0]: self.on_view_button_clicked(r_id, view_button))
+            info_layout.addWidget(view_button, alignment=Qt.AlignLeft)
 
             recipe_layout.addLayout(info_layout)
-            scroll_layout.addWidget(recipe_frame)
+
+            # Center the recipe card
+            card_container = QHBoxLayout()
+            card_container.addWidget(recipe_frame)
+            card_container.setAlignment(Qt.AlignCenter)
+            scroll_layout.addLayout(card_container)
+
 
         # Add the back and close buttons
         button_layout = QHBoxLayout()
         back_button = QPushButton("Back")
-        back_button.setStyleSheet("background-color: #4355ff; color: white; font-size: 10pt; font-weight: bold;")
+        back_button.setStyleSheet("""
+            QPushButton {
+                background-color: #4355ff;
+                color: white;
+                font-size: 12pt;
+                font-weight: bold;
+                border-radius: 5px;
+                padding: 5px 10px;
+            }
+            QPushButton:clicked {
+                background-color: green;
+            }
+        """)
         back_button.clicked.connect(self.go_back)
         button_layout.addWidget(back_button)
-        
+
         close_button = QPushButton("Close")
-        close_button.setStyleSheet("background-color: #4355ff; color: white; font-size: 10pt; font-weight: bold;")
+        close_button.setStyleSheet("""
+            QPushButton {
+                background-color: #4355ff;
+                color: white;
+                font-size: 12pt;
+                font-weight: bold;
+                border-radius: 5px;
+                padding: 5px 10px;
+            }
+            QPushButton:clicked {
+                background-color: green;
+            }
+        """)
         close_button.clicked.connect(self.close_application)
         button_layout.addWidget(close_button)
-        
+
         main_layout.addLayout(button_layout)
+
+
+    def on_view_button_clicked(self, recipe_id, view_button):
+        """Open the recipe information page and change the button state."""
+        from API import getRecipeInfo
+        recipe_info = getRecipeInfo.get_recipe_info(recipe_id)
+        self.recipeInfoWindow = RecipeInstructionsPage(recipe_info, parent=self)
+        self.recipeInfoWindow.show()
+        self.hide()  # Hide the current window instead of closing it
+        view_button.setProperty("clicked", True)
+        view_button.setStyleSheet(view_button.styleSheet())
+        
 
     def go_back(self):
         """Return to the tenant selection page."""
@@ -124,32 +194,3 @@ class RecipeApp(QMainWindow):
         """Close the application."""
         self.close()
         QApplication.instance().quit()
-
-    def open_recipe_info(self, recipe_id):
-        """Open the recipe information page."""
-        from API import getRecipeInfo
-        recipe_info = getRecipeInfo.get_recipe_info(recipe_id)
-        self.recipeInfoWindow = RecipeInstructionsPage(recipe_info, parent=self)
-        self.recipeInfoWindow.show()
-        self.hide()  # Hide the current window instead of closing it
-
-# recipes = get_recipes_by_ingredients(ingredients)
-
-'''
-ingredients = ["apples", "bananas", "milk", "butter"]
-
-# Call the function and print the results
-recipes = getRecipes.get_recipes_by_ingredients(ingredients)
-print("Ranked Recipes:")
-for rank, recipe in recipes.items():
-    print(f"Rank: {rank}")
-    print(f"ID: {recipe[0]}")
-    print(f"Title: {recipe[1]}")
-    print(f"Missed Ingredients: {recipe[2]}")
-    print(f"Used Ingredients: {recipe[3]}")
-    print(f"Rank Score: {recipe[4]:.2f}")
-    print(f"Preparation Time: {recipe[5]} minutes")
-    print(f"Servings: {recipe[6]}")
-    print(f"Image URL: {recipe[7]}")
-    print()
-'''

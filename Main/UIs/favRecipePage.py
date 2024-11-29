@@ -8,17 +8,12 @@ from PyQt5.QtGui import QPixmap
 from io import BytesIO
 import requests
 
-# Sample data for testing
+# Data import
+from Data.favRecipe import megan_fav
+
+# Initialize favorites dictionary
 favorites = {
-    "Megan": [
-        [1, "Pancakes", 15, 2, "https://via.placeholder.com/100"],
-        [2, "Omelette", 10, 1, "https://via.placeholder.com/100"],
-    ],
-    "Xiang": [
-        [3, "Stir-Fried Chicken", 25, 4, "https://via.placeholder.com/100"]
-    ],
-    "Zhong": [],
-    "Bradley": []
+    "Megan": megan_fav
 }
 
 # Helper function to load an image from a URL
@@ -88,7 +83,7 @@ class FavoritesPage(QMainWindow):
         recipe_layout = QHBoxLayout(recipe_frame)
 
         # Recipe image
-        pixmap = load_image_from_url(recipe[4])  # Image URL
+        pixmap = load_image_from_url(recipe[7])  # Image URL index is 7
         image_label = QLabel()
         if pixmap:
             image_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
@@ -98,15 +93,15 @@ class FavoritesPage(QMainWindow):
 
         # Recipe details
         details_layout = QVBoxLayout()
-        title_label = QLabel(recipe[1])  # Recipe title
+        title_label = QLabel(recipe[1])  # Recipe title index is 1
         title_label.setStyleSheet("color: white; font-size: 14px; font-weight: bold;")
         details_layout.addWidget(title_label)
 
-        time_label = QLabel(f"Cooking Time: {recipe[2]} minutes")
+        time_label = QLabel(f"Cooking Time: {recipe[5]} minutes")  # Cooking time index is 5
         time_label.setStyleSheet("color: white; font-size: 12px;")
         details_layout.addWidget(time_label)
 
-        servings_label = QLabel(f"Servings: {recipe[3]}")
+        servings_label = QLabel(f"Servings: {recipe[6]}")  # Servings index is 6
         servings_label.setStyleSheet("color: white; font-size: 12px;")
         details_layout.addWidget(servings_label)
 
@@ -114,7 +109,7 @@ class FavoritesPage(QMainWindow):
         remove_button.setStyleSheet(
             "background-color: #ff4444; color: white; font-size: 12px; border-radius: 5px; padding: 5px;"
         )
-        remove_button.clicked.connect(lambda: self.remove_recipe(recipe[0]))
+        remove_button.clicked.connect(lambda: self.remove_recipe(recipe[0]))  # Recipe ID index is 0
         details_layout.addWidget(remove_button)
 
         recipe_layout.addLayout(details_layout)
@@ -136,7 +131,7 @@ class FavoritesPage(QMainWindow):
 # Test the application with dummy data
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    user = "Megan"  # Replace with the desired tenant name
+    user = "Megan"
     window = FavoritesPage(user)
     window.show()
     sys.exit(app.exec_())

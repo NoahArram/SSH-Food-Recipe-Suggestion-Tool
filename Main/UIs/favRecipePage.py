@@ -1,15 +1,42 @@
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QWidget, QScrollArea, QFrame, QSizePolicy
+    QWidget, QScrollArea, QFrame
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
+from io import BytesIO
+import requests
 
+# Sample data for testing
+favorites = {
+    "Megan": [
+        [1, "Pancakes", 15, 2, "https://via.placeholder.com/100"],
+        [2, "Omelette", 10, 1, "https://via.placeholder.com/100"],
+    ],
+    "Xiang": [
+        [3, "Stir-Fried Chicken", 25, 4, "https://via.placeholder.com/100"]
+    ],
+    "Zhong": [],
+    "Bradley": []
+}
+
+# Helper function to load an image from a URL
+def load_image_from_url(url):
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        img_data = BytesIO(response.content)
+        pixmap = QPixmap()
+        pixmap.loadFromData(img_data.getvalue())
+        return pixmap
+    except Exception as e:
+        print(f"Error loading image: {e}")
+        return None
 
 class FavoritesPage(QMainWindow):
-    def __init__(self, user, parent=None):
-        super().__init__(parent)
+    def __init__(self, user):
+        super().__init__()
         self.user = user  # Tenant name
         self.setWindowTitle(f"{self.user}'s Favorites")
         self.setGeometry(100, 100, 1000, 600)
@@ -39,9 +66,8 @@ class FavoritesPage(QMainWindow):
         scroll_layout = QVBoxLayout(scroll_content)
         scroll_area.setWidget(scroll_content)
 
-        # Fetch and display favorites
-        from API import favorites_manager
-        recipes = favorites_manager.get_favorites(self.user)
+        # Fetch and display favorites for the user
+        recipes = favorites.get(self.user, [])
         for recipe in recipes:
             self.create_recipe_card(recipe, scroll_layout)
 
@@ -50,7 +76,7 @@ class FavoritesPage(QMainWindow):
         back_button.setStyleSheet(
             "background-color: #4355ff; color: white; font-size: 14px; padding: 10px; border-radius: 5px;"
         )
-        back_button.clicked.connect(self.go_back)
+        back_button.clicked.connect(self.close)  # Close the window
         main_layout.addWidget(back_button)
 
     def create_recipe_card(self, recipe, layout):
@@ -62,8 +88,7 @@ class FavoritesPage(QMainWindow):
         recipe_layout = QHBoxLayout(recipe_frame)
 
         # Recipe image
-        from UIs.recipeApp import load_image_from_url
-        pixmap = load_image_from_url(recipe[5])  # Image URL
+        pixmap = load_image_from_url(recipe[4])  # Image URL
         image_label = QLabel()
         if pixmap:
             image_label.setPixmap(pixmap.scaled(100, 100, Qt.KeepAspectRatio))
@@ -77,6 +102,14 @@ class FavoritesPage(QMainWindow):
         title_label.setStyleSheet("color: white; font-size: 14px; font-weight: bold;")
         details_layout.addWidget(title_label)
 
+        time_label = QLabel(f"Cooking Time: {recipe[2]} minutes")
+        time_label.setStyleSheet("color: white; font-size: 12px;")
+        details_layout.addWidget(time_label)
+
+        servings_label = QLabel(f"Servings: {recipe[3]}")
+        servings_label.setStyleSheet("color: white; font-size: 12px;")
+        details_layout.addWidget(servings_label)
+
         remove_button = QPushButton("Remove")
         remove_button.setStyleSheet(
             "background-color: #ff4444; color: white; font-size: 12px; border-radius: 5px; padding: 5px;"
@@ -89,19 +122,21 @@ class FavoritesPage(QMainWindow):
 
     def remove_recipe(self, recipe_id):
         """Remove a recipe from favorites."""
-        from API import favorites_manager
-        favorites_manager.remove_from_favorites(self.user, recipe_id)
+        global favorites
+        favorites[self.user] = [r for r in favorites[self.user] if r[0] != recipe_id]
         print(f"Recipe {recipe_id} removed from {self.user}'s favorites.")
         self.refresh_page()
 
     def refresh_page(self):
         """Refresh the favorites page."""
         self.close()
-        self.__init__(self.user, parent=self.parent())
+        self.__init__(self.user)
         self.show()
 
-    def go_back(self):
-        """Navigate back to the tenant selection page."""
-        self.close()
-        if self.parent() is not None:
-            self.parent().show()
+# Test the application with dummy data
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    user = "Megan"  # Replace with the desired tenant name
+    window = FavoritesPage(user)
+    window.show()
+    sys.exit(app.exec_())

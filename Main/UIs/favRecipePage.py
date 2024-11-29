@@ -9,11 +9,14 @@ from io import BytesIO
 import requests
 
 # Data import
-from Data.favRecipe import megan_fav
+from Data.favRecipe import megan_fav, xiang_fav, zhong_fav, bradley_fav
 
 # Initialize favorites dictionary
 favorites = {
-    "Megan": megan_fav
+    "Megan": megan_fav,
+    "Xiang": xiang_fav,
+    "Zhong": zhong_fav,
+    "Bradley": bradley_fav
 }
 
 # Helper function to load an image from a URL
@@ -131,7 +134,7 @@ class FavoritesPage(QMainWindow):
 # Test the application with dummy data
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    user = "Megan"
+    user = "Xhong"
     window = FavoritesPage(user)
     window.show()
     sys.exit(app.exec_())

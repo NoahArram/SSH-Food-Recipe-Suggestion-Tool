@@ -57,6 +57,7 @@ class RecipeApp(QMainWindow):
         scroll_area.setWidget(scroll_content)
 
         for recipe in self.recipes.values():
+            # Create the frame for the recipe card
             recipe_frame = QFrame()
             recipe_frame.setStyleSheet("""
                 background-color: #444444;
@@ -65,38 +66,51 @@ class RecipeApp(QMainWindow):
                 padding: 10px;
             """)
             recipe_frame.setFixedWidth(900)  
+            
+            # Create the outer horizontal layout for image and info
             recipe_layout = QHBoxLayout(recipe_frame)
             recipe_layout.setContentsMargins(10, 10, 10, 10)
             recipe_layout.setSpacing(15)
 
+            # Add the image section (on the left side)
             if recipe[7]:
                 pixmap = load_image_from_url(recipe[7])
                 if pixmap:
                     image_label = QLabel()
                     image_label.setPixmap(pixmap.scaled(300, 300, Qt.KeepAspectRatio))
                     image_label.setStyleSheet("border: none;")  
-
                     recipe_layout.addWidget(image_label)
                 else:
                     image_label = QLabel("No Image")
                     image_label.setStyleSheet("color: white; font-weight: bold;")
                     recipe_layout.addWidget(image_label)
+            else:
+                # Placeholder if no image URL exists
+                image_label = QLabel("No Image")
+                image_label.setStyleSheet("color: white; font-weight: bold;")
+                recipe_layout.addWidget(image_label)
 
+            # Create a vertical layout for the recipe info (on the right side)
             info_layout = QVBoxLayout()
+            
+            # Add recipe title
             recipe_title = QLabel(recipe[1])
             recipe_title.setStyleSheet("color: white; font-size: 14pt; font-weight: bold;")
             info_layout.addWidget(recipe_title)
 
+            # Add recipe time and servings
             recipe_details = f"Time: {recipe[5]} minutes - Serves: {recipe[6]}"
             details_label = QLabel(recipe_details)
             details_label.setStyleSheet("color: white; font-size: 12pt;")
             info_layout.addWidget(details_label)
 
+            # Add ingredients used and needed info
             ingredients_info = "Ingredients Used:" + str(recipe[3]) + "\nIngredients Needed:" + str(recipe[2])
             ingredients_label = QLabel(ingredients_info)
             ingredients_label.setStyleSheet("color: white; font-size: 10pt;")
             info_layout.addWidget(ingredients_label)
 
+            # Create buttons (View Recipe and Favourite)
             view_button = QPushButton("View Recipe")
             view_button.setProperty("clicked", False)
             view_button.setFixedWidth(300)
@@ -110,19 +124,46 @@ class RecipeApp(QMainWindow):
                     padding: 5px 10px;
                 }
                 QPushButton[clicked="true"] {
-                    /* implement turn green button logic here*/
+                    print("clicked")
                 }
             """)
+
+            favourite_button = QPushButton("❤")
+            favourite_button.setProperty("clicked", False)
+            favourite_button.setFixedSize(70, 40)
+            favourite_button.setStyleSheet("""
+                QPushButton {
+                    background-color: #444444;
+                    color: red;
+                    font-size: 20pt;
+                    font-weight: bold;
+                    border-radius: 5px;
+                    padding: 5px 10px;
+                }
+                QPushButton[clicked="true"] {
+                    /* implement turn green button logic here*/ 
+                }
+            """)
+
+            # Create a horizontal layout for the buttons (inline with each other)
+            button_layout = QHBoxLayout()  
+            button_layout.addWidget(view_button)  
+            button_layout.addWidget(favourite_button) 
+
+            # Connect the View Recipe button's click event
             view_button.clicked.connect(lambda checked, r_id=recipe[0]: self.on_view_button_clicked(r_id, view_button))
-            info_layout.addWidget(view_button, alignment=Qt.AlignLeft)
 
-            recipe_layout.addLayout(info_layout)
+            # Add the info layout and the button layout to the recipe card layout
+            info_layout.addLayout(button_layout)  # Add the buttons (View and Favourite) at the bottom
+            recipe_layout.addLayout(info_layout)  # Add the recipe info to the right side of the card
 
-            # Center the recipe card
+            # Center the recipe card within the container
             card_container = QHBoxLayout()
             card_container.addWidget(recipe_frame)
             card_container.setAlignment(Qt.AlignCenter)
             scroll_layout.addLayout(card_container)
+
+
 
 
         # Add the back and close buttons

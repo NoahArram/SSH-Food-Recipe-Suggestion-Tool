@@ -37,7 +37,6 @@ class RecipeInstructionsPage(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        # Main layout
         main_layout = QVBoxLayout()
         container = QWidget()
         container.setLayout(main_layout)
@@ -68,7 +67,7 @@ class RecipeInstructionsPage(QMainWindow):
         metadata_layout.setContentsMargins(10, 10, 10, 10)
         metadata_layout.setSpacing(15)
 
-        pixmap = load_image_from_url(self.recipe[5])  # Assuming recipe[5] is the image URL
+        pixmap = load_image_from_url(self.recipe[5]) 
         image_label = QLabel()
         if pixmap and not pixmap.isNull():
             image_label.setPixmap(pixmap.scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation))
@@ -102,7 +101,7 @@ class RecipeInstructionsPage(QMainWindow):
         ingredients_title.setAlignment(Qt.AlignLeft)
         ingredients_layout.addWidget(ingredients_title)
 
-        for ingredient in self.recipe[0]:  # Assuming recipe[0] is a list of ingredients
+        for ingredient in self.recipe[0]:  
             ingredient_label = QLabel(ingredient)
             ingredient_label.setStyleSheet("color: white; font-size: 10pt;")
             ingredient_label.setWordWrap(True)
@@ -110,7 +109,6 @@ class RecipeInstructionsPage(QMainWindow):
 
         scroll_layout.addWidget(ingredients_frame)
 
-        # Instructions
         instructions_frame = QFrame()
         instructions_frame.setStyleSheet("background-color: #1C1C1C; border: none; border-radius: 10px;")
         instructions_layout = QVBoxLayout(instructions_frame)
@@ -121,7 +119,7 @@ class RecipeInstructionsPage(QMainWindow):
         instructions_title.setAlignment(Qt.AlignLeft)
         instructions_layout.addWidget(instructions_title)
 
-        for i, step in enumerate(self.recipe[1], start=1):  # Assuming recipe[1] is a list of steps
+        for i, step in enumerate(self.recipe[1], start=1):  
             step_label = QLabel(f"{i}. {step}")
             step_label.setStyleSheet("color: white; font-size: 10pt;")
             step_label.setWordWrap(True)
@@ -129,10 +127,23 @@ class RecipeInstructionsPage(QMainWindow):
 
         scroll_layout.addWidget(instructions_frame)
 
-        # Back button
         back_button = QPushButton("Back")
+        back_button.setFixedWidth(100)
         back_button.setStyleSheet(
-            "background-color: #4355ff; color: white; font-size: 12pt; font-weight: bold; padding: 10px; border-radius: 5px;"
+            """
+            QPushButton {
+                background-color: #4355ff; 
+                color: white; 
+                font-size: 16px; 
+                padding: 12px; 
+                font-weight: bold; 
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #5a6aff;
+            }
+        """
+
         )
         back_button.clicked.connect(self.go_back)
 
@@ -154,23 +165,7 @@ class RecipeInstructionsPage(QMainWindow):
         self.close()
         if self.parent_window is not None:
             self.parent_window.show()
-
-    def get_recipes(self):
-        """Retrieve recipes again or pass them as needed."""
-        # Implement a method to retrieve or pass the recipes
-        # For this example, we can return an empty dictionary or re-fetch
-        return {}
-        back_button.setStyleSheet(
-            "background-color: #4355ff; color: white; font-size: 12pt; font-weight: bold; padding: 10px;"
-        )
-        back_button.clicked.connect(self.go_back)
-
-        # Center the button at the bottom
-        button_layout = QHBoxLayout()
-        button_layout.addStretch()
-        button_layout.addWidget(back_button)
-        button_layout.addStretch()
-        main_layout.addLayout(button_layout)
+        
 
     def go_back(self):
         """Return to the recipe list."""
@@ -181,7 +176,6 @@ class RecipeInstructionsPage(QMainWindow):
     def get_recipes(self):
         """Retrieve recipes again or pass them as needed."""
         # Implement a method to retrieve or pass the recipes
-        # For this example, we can return an empty dictionary or re-fetch
         return {}
 
 

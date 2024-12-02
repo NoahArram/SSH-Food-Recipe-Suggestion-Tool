@@ -152,37 +152,56 @@ class TenantSelectionApp(QMainWindow):
         return card
 
     def open_favorites_page(self, name):
-        """Open the FavoritesPage for the selected tenant."""
         self.favoritesWindow = FavoritesPage(name)
         self.favoritesWindow.show()
 
     def add_bottom_container(self):
-        """Create and add the bottom container with Cancel and OK buttons."""
         self.bottom_container = QWidget(self.central_widget)
         self.bottom_container.setStyleSheet("background-color: #eeeff4;")
-        self.bottom_container.setFixedHeight(80)  # Consistent bottom bar height
+        self.bottom_container.setFixedHeight(80)  
         self.main_layout.addWidget(self.bottom_container)
 
         bottom_layout = QHBoxLayout(self.bottom_container)
         cancel_button = QPushButton("Cancel", self.bottom_container)
         cancel_button.setStyleSheet(
-            "background-color: #4355ff; color: white; font-size: 16px; padding: 15px 2px; font-weight: bold; border-radius: 12px"
-        )
-        #cancel_button.setFixedWidth(300)
+                """
+                    QPushButton {
+                        background-color: #4355ff; 
+                        color: white; 
+                        font-size: 16px; 
+                        padding: 15px 2px; 
+                        font-weight: bold; 
+                        border-radius: 12px;
+                    }
+                    QPushButton:hover {
+                        background-color: #5a6aff;
+                    }
+                """
+            )
         cancel_button.clicked.connect(self.close)
         bottom_layout.addWidget(cancel_button)
 
         ok_button = QPushButton("OK", self.bottom_container)
         ok_button.setStyleSheet(
-            "background-color: #4355ff; color: white; font-size: 16px; padding: 15px 2px; font-weight: bold; border-radius: 12px"
+            """
+                QPushButton {
+                    background-color: #4355ff; 
+                    color: white; 
+                    font-size: 16px; 
+                    padding: 15px 2px; 
+                    font-weight: bold; 
+                    border-radius: 12px;
+                }
+                QPushButton:hover {
+                    background-color: #5a6aff;
+                }
+                """
         )
-        #ok_button.setFixedWidth(300)
 
         ok_button.clicked.connect(self.submit_selection)
         bottom_layout.addWidget(ok_button)
 
     def toggle_selection(self, name, button):
-        """Toggle tenant selection."""
         if name in self.selected_tenants:
             self.selected_tenants.remove(name)
             button.setText("Select")
@@ -217,7 +236,6 @@ class TenantSelectionApp(QMainWindow):
             )
 
     def submit_selection(self):
-        """Process the selected tenants and show recipe list."""
         selected_tenants = self.selected_tenants
         if not selected_tenants:
             print("No tenants selected.")

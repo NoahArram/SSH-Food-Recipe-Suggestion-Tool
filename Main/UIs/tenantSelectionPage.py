@@ -9,6 +9,8 @@ from PyQt5.QtCore import Qt
 
 # Import recipeListPage
 from UIs.recipeListPage import RecipeApp
+# Import FavoritesPage
+from UIs.favRecipePage import FavoritesPage
 
 class TenantSelectionApp(QMainWindow):
     def __init__(self):
@@ -123,9 +125,36 @@ class TenantSelectionApp(QMainWindow):
         select_button.clicked.connect(lambda: self.toggle_selection(name, select_button))
         card_layout.addWidget(select_button)
 
+        # Add the Favorites button
+        fav_button = QPushButton("Favorites")
+        fav_button.setStyleSheet(
+            """
+            QPushButton {
+                background-color: #ff4444; 
+                color: white; 
+                font-size: 16px; 
+                font-weight: bold; 
+                padding: 10px 20px; 
+                border-radius: 12px; /* Rounded corners */
+            }
+            QPushButton:pressed {
+                background-color: #ff6666;  /* Change color when pressed */
+                border-radius: 12px; /* Ensure rounded corners on press */
+            }
+            QPushButton:hover {
+                background-color: #ff7777;  /* Hover color */
+            }
+            """
+        )
+        fav_button.clicked.connect(lambda: self.open_favorites_page(name))
+        card_layout.addWidget(fav_button)
+
         return card
 
-
+    def open_favorites_page(self, name):
+        """Open the FavoritesPage for the selected tenant."""
+        self.favoritesWindow = FavoritesPage(name)
+        self.favoritesWindow.show()
 
     def add_bottom_container(self):
         """Create and add the bottom container with Cancel and OK buttons."""

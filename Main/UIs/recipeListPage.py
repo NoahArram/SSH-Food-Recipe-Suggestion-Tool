@@ -11,6 +11,7 @@ from io import BytesIO
 from UIs.recipeInfoPage import RecipeInstructionsPage
 
 from API import getRecipes
+from Data import favRecipe
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -25,6 +26,8 @@ def load_image_from_url(url):
         print(f"Error loading image: {e}")
         return None
 
+  
+
 class RecipeApp(QMainWindow):
     def __init__(self, recipes, parent=None):
         super().__init__(parent)
@@ -34,13 +37,11 @@ class RecipeApp(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        
         main_layout = QVBoxLayout()
         container = QWidget()
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
-        
         title_label = QLabel("Recipe List")
         title_label.setStyleSheet("font-size: 24pt; font-weight: bold; color: white; background-color: #4355ff; padding: 10px; border-radius: 10px;")
         title_label.setAlignment(Qt.AlignCenter)
@@ -52,7 +53,7 @@ class RecipeApp(QMainWindow):
         main_layout.addWidget(scroll_area)
 
         scroll_content = QWidget()
-        scroll_layout = QVBoxLayout(scroll_content)  
+        scroll_layout = QVBoxLayout(scroll_content)
         scroll_area.setWidget(scroll_content)
 
         for recipe in self.recipes.values():
@@ -63,8 +64,8 @@ class RecipeApp(QMainWindow):
                 border-radius: 10px;
                 padding: 10px;
             """)
-            recipe_frame.setFixedWidth(900)  
-            
+            recipe_frame.setFixedWidth(900)
+
             recipe_layout = QHBoxLayout(recipe_frame)
             recipe_layout.setContentsMargins(10, 10, 10, 10)
             recipe_layout.setSpacing(15)
@@ -74,7 +75,7 @@ class RecipeApp(QMainWindow):
                 if pixmap:
                     image_label = QLabel()
                     image_label.setPixmap(pixmap.scaled(300, 300, Qt.KeepAspectRatio))
-                    image_label.setStyleSheet("border: none;")  
+                    image_label.setStyleSheet("border: none;")
                     recipe_layout.addWidget(image_label)
                 else:
                     image_label = QLabel("No Image")
@@ -86,7 +87,7 @@ class RecipeApp(QMainWindow):
                 recipe_layout.addWidget(image_label)
 
             info_layout = QVBoxLayout()
-            
+
             recipe_title = QLabel(recipe[1])
             recipe_title.setStyleSheet("color: white; font-size: 14pt; font-weight: bold;")
             info_layout.addWidget(recipe_title)
@@ -141,22 +142,20 @@ class RecipeApp(QMainWindow):
                 }
             """)
 
-            button_layout = QHBoxLayout()  
-            button_layout.addWidget(view_button)  
-            button_layout.addWidget(favourite_button) 
+            button_layout = QHBoxLayout()
+            button_layout.addWidget(view_button)
+            button_layout.addWidget(favourite_button)
 
             view_button.clicked.connect(lambda checked, r_id=recipe[0]: self.on_view_button_clicked(r_id, view_button))
+            favourite_button.clicked.connect(lambda checked, r=recipe: self.on_favourite_button_clicked(r, favourite_button))
 
-            info_layout.addLayout(button_layout)  
-            recipe_layout.addLayout(info_layout) 
+            info_layout.addLayout(button_layout)
+            recipe_layout.addLayout(info_layout)
 
             card_container = QHBoxLayout()
             card_container.addWidget(recipe_frame)
             card_container.setAlignment(Qt.AlignCenter)
             scroll_layout.addLayout(card_container)
-
-
-
 
         button_layout = QHBoxLayout()
         back_button = QPushButton("Back")
@@ -195,17 +194,27 @@ class RecipeApp(QMainWindow):
 
         main_layout.addLayout(button_layout)
 
-
     def on_view_button_clicked(self, recipe_id, view_button):
         """Open the recipe information page and change the button state."""
         from API import getRecipeInfo
         recipe_info = getRecipeInfo.get_recipe_info(recipe_id)
         self.recipeInfoWindow = RecipeInstructionsPage(recipe_info, parent=self)
         self.recipeInfoWindow.show()
-        self.hide()  
+        self.hide()
         view_button.setProperty("clicked", True)
         view_button.setStyleSheet(view_button.styleSheet())
-        
+
+    def on_favourite_button_clicked(self, recipe, favourite_button):
+        """Add the recipe to the user's favorites and change the button state."""
+        user = self.parent().selected_tenants[0]  # Assuming a single user is selected
+        favourites = favRecipe.favourites
+        if user in favourites:
+            favourites[user].append(recipe)
+            print(f"Recipe {recipe[1]} added to {user}'s favorites.")
+        else:
+            print(f"User {user} not found in favorites.")
+        favourite_button.setProperty("clicked", True)
+        favourite_button.setStyleSheet(favourite_button.styleSheet())
 
     def go_back(self):
         """Return to the tenant selection page."""

@@ -109,32 +109,4 @@ class FavoritesPage(QMainWindow):
         details_layout.addWidget(servings_label)
 
         remove_button = QPushButton("Remove")
-        remove_button.setStyleSheet(
-            "background-color: #ff4444; color: white; font-size: 12px; border-radius: 5px; padding: 5px;"
-        )
-        remove_button.clicked.connect(lambda: self.remove_recipe(recipe[0]))  # Recipe ID index is 0
-        details_layout.addWidget(remove_button)
-
-        recipe_layout.addLayout(details_layout)
-        layout.addWidget(recipe_frame)
-
-    def remove_recipe(self, recipe_id):
-        """Remove a recipe from favorites."""
-        global favorites
-        favorites[self.user] = [r for r in favorites[self.user] if r[0] != recipe_id]
-        print(f"Recipe {recipe_id} removed from {self.user}'s favorites.")
-        self.refresh_page()
-
-    def refresh_page(self):
-        """Refresh the favorites page."""
-        self.close()
-        self.__init__(self.user)
-        self.show()
-
-# Test the application with dummy data
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    user = "Xhong"
-    window = FavoritesPage(user)
-    window.show()
-    sys.exit(app.exec_())
+        remo

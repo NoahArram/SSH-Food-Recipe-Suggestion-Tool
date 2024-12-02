@@ -155,6 +155,10 @@ class RecipeApp(QMainWindow):
             card_container.setAlignment(Qt.AlignCenter)
             scroll_layout.addLayout(card_container)
 
+            # Insert the new code block after the loop
+            tenant_card = self.create_tenant_card("image_path", "name")
+            scroll_layout.addWidget(tenant_card)
+
 
 
 

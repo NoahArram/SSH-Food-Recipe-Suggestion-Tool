@@ -9,6 +9,8 @@ from PyQt5.QtCore import Qt
 
 # Import recipeListPage
 from UIs.recipeListPage import RecipeApp
+# Import FavoritesPage
+from UIs.favRecipePage import FavoritesPage
 
 class TenantSelectionApp(QMainWindow):
     def __init__(self):
@@ -123,9 +125,36 @@ class TenantSelectionApp(QMainWindow):
         select_button.clicked.connect(lambda: self.toggle_selection(name, select_button))
         card_layout.addWidget(select_button)
 
+        # Add the Favorites button
+        fav_button = QPushButton("Favorites")
+        fav_button.setStyleSheet(
+            """
+            QPushButton {
+                background-color: #ff4444; 
+                color: white; 
+                font-size: 16px; 
+                font-weight: bold; 
+                padding: 10px 20px; 
+                border-radius: 12px; /* Rounded corners */
+            }
+            QPushButton:pressed {
+                background-color: #ff6666;  /* Change color when pressed */
+                border-radius: 12px; /* Ensure rounded corners on press */
+            }
+            QPushButton:hover {
+                background-color: #ff7777;  /* Hover color */
+            }
+            """
+        )
+        fav_button.clicked.connect(lambda: self.open_favorites_page(name))
+        card_layout.addWidget(fav_button)
+
         return card
 
-
+    def open_favorites_page(self, name):
+        """Open the FavoritesPage for the selected tenant."""
+        self.favoritesWindow = FavoritesPage(name)
+        self.favoritesWindow.show()
 
     def add_bottom_container(self):
         """Create and add the bottom container with Cancel and OK buttons."""
@@ -196,35 +225,4 @@ class TenantSelectionApp(QMainWindow):
 
         ingredients = self.get_ingredients_for_tenants(selected_tenants)
         from API import getRecipes
-        recipes = getRecipes.get_recipes_by_ingredients(ingredients)
-
-        # Initialize RecipeApp with recipes and show it
-        self.recipeListWindow = RecipeApp(recipes, parent=self)
-        self.recipeListWindow.show()
-        self.hide()
-
-    def get_ingredients_for_tenants(self, tenants):
-        """Retrieve ingredients for the selected tenants."""
-        import os
-
-        # Get the directory of the current script
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        # Construct the path to the data file relative to the script's directory
-        data_file_path = os.path.join(current_dir, '../Data/ingredient.json')
-
-        # Open the file using the constructed path
-        with open(data_file_path, 'r') as f:
-            data = json.load(f)
-
-        ingredients = []
-        for entry in data['main']:
-            if entry['Owner'] in tenants:
-                ingredients.extend(entry['ingredients'])
-        return list(set(ingredients))
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = TenantSelectionApp()
-    window.show()
-    sys.exit(app.exec_())
+ 

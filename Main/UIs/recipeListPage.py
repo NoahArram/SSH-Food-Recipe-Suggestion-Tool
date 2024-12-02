@@ -117,9 +117,7 @@ class RecipeApp(QMainWindow):
                 QPushButton:hover {
                     background-color: #6475ff;  /* Lighter blue on hover */
                 }
-                QPushButton[clicked="true"] {
-                    background-color: #28a745;  /* Green when clicked */
-                }
+                
             """)
 
             favourite_button = QPushButton("❤")
@@ -137,9 +135,7 @@ class RecipeApp(QMainWindow):
                 QPushButton:hover {
                     background-color: #555555;  /* Slightly lighter grey on hover */
                 }
-                QPushButton[clicked="true"] {
-                    color: green;  /* Change color when clicked */
-                }
+               
             """)
 
             button_layout = QHBoxLayout()

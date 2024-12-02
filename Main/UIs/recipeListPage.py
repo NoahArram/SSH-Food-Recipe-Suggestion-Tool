@@ -117,6 +117,7 @@ class RecipeApp(QMainWindow):
                 QPushButton:hover {
                     background-color: #6475ff;  /* Lighter blue on hover */
                 }
+                
             """)
 
             favourite_button = QPushButton("❤")
@@ -134,6 +135,7 @@ class RecipeApp(QMainWindow):
                 QPushButton:hover {
                     background-color: #555555;  /* Slightly lighter grey on hover */
                 }
+               
             """)
 
             button_layout = QHBoxLayout()

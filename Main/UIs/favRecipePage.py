@@ -9,9 +9,8 @@ from io import BytesIO
 import requests
 
 # Data import
-from Data.favRecipe import favourites  # Import the favorites dictionary
+from Data.favRecipe import favourites  
 
-# Helper function to load an image from a URL
 def load_image_from_url(url):
     try:
         response = requests.get(url, timeout=5)
@@ -33,13 +32,11 @@ class FavoritesPage(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        # Main layout
         main_layout = QVBoxLayout()
         container = QWidget()
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
-        # Header
         title_label = QLabel(f"{self.user}'s Favorites")
         title_label.setStyleSheet(
             "font-size: 24px; font-weight: bold; color: white; background-color: #4355ff; padding: 10px;"
@@ -47,7 +44,6 @@ class FavoritesPage(QMainWindow):
         title_label.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(title_label)
 
-        # Scrollable content for recipes
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         main_layout.addWidget(scroll_area)
@@ -56,17 +52,16 @@ class FavoritesPage(QMainWindow):
         scroll_layout = QVBoxLayout(scroll_content)
         scroll_area.setWidget(scroll_content)
 
-        # Fetch and display favorites for the user
         recipes = favourites.get(self.user, [])
         for recipe in recipes:
             self.create_recipe_card(recipe, scroll_layout)
 
-        # Back button
+        
         back_button = QPushButton("Back")
         back_button.setStyleSheet(
             "background-color: #4355ff; color: white; font-size: 14px; padding: 10px; border-radius: 5px;"
         )
-        back_button.clicked.connect(self.close)  # Close the window
+        back_button.clicked.connect(self.close)  
         main_layout.addWidget(back_button)
 
     def create_recipe_card(self, recipe, layout):
@@ -77,7 +72,6 @@ class FavoritesPage(QMainWindow):
         )
         recipe_layout = QHBoxLayout(recipe_frame)
 
-        # Recipe image
         pixmap = load_image_from_url(recipe[7])  # Image URL index is 7
         image_label = QLabel()
         if pixmap:
@@ -86,7 +80,6 @@ class FavoritesPage(QMainWindow):
             image_label.setText("No Image")
         recipe_layout.addWidget(image_label)
 
-        # Recipe details
         details_layout = QVBoxLayout()
         title_label = QLabel(recipe[1])  # Recipe title index is 1
         title_label.setStyleSheet("color: white; font-size: 14px; font-weight: bold;")

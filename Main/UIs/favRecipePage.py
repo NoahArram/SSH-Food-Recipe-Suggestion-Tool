@@ -9,15 +9,7 @@ from io import BytesIO
 import requests
 
 # Data import
-from Data.favRecipe import megan_fav, xiang_fav, zhong_fav, bradley_fav
-
-# Initialize favorites dictionary
-favorites = {
-    "Megan": megan_fav,
-    "Xiang": xiang_fav,
-    "Zhong": zhong_fav,
-    "Bradley": bradley_fav
-}
+from Data.favRecipe import favourites  # Import the favorites dictionary
 
 # Helper function to load an image from a URL
 def load_image_from_url(url):
@@ -65,7 +57,7 @@ class FavoritesPage(QMainWindow):
         scroll_area.setWidget(scroll_content)
 
         # Fetch and display favorites for the user
-        recipes = favorites.get(self.user, [])
+        recipes = favourites.get(self.user, [])
         for recipe in recipes:
             self.create_recipe_card(recipe, scroll_layout)
 
@@ -120,8 +112,8 @@ class FavoritesPage(QMainWindow):
 
     def remove_recipe(self, recipe_id):
         """Remove a recipe from favorites."""
-        global favorites
-        favorites[self.user] = [r for r in favorites[self.user] if r[0] != recipe_id]
+        global favourites
+        favourites[self.user] = [r for r in favourites[self.user] if r[0] != recipe_id]
         print(f"Recipe {recipe_id} removed from {self.user}'s favorites.")
         self.refresh_page()
 
@@ -134,7 +126,7 @@ class FavoritesPage(QMainWindow):
 # Test the application with dummy data
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    user = "Xhong"
+    user = "Xiang"
     window = FavoritesPage(user)
     window.show()
     sys.exit(app.exec_())

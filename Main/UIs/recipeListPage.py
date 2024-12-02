@@ -8,7 +8,6 @@ from PyQt5.QtGui import QPixmap
 import requests
 from io import BytesIO
 
-# Import RecipeInstructionsPage
 from UIs.recipeInfoPage import RecipeInstructionsPage
 
 from API import getRecipes
@@ -35,13 +34,13 @@ class RecipeApp(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        # Main layout
+        
         main_layout = QVBoxLayout()
         container = QWidget()
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
-        # Title
+        
         title_label = QLabel("Recipe List")
         title_label.setStyleSheet("font-size: 24pt; font-weight: bold; color: white; background-color: #4355ff; padding: 10px; border-radius: 10px;")
         title_label.setAlignment(Qt.AlignCenter)
@@ -65,6 +64,7 @@ class RecipeApp(QMainWindow):
                 padding: 10px;
             """)
             recipe_frame.setFixedWidth(900)  
+            
             recipe_layout = QHBoxLayout(recipe_frame)
             recipe_layout.setContentsMargins(10, 10, 10, 10)
             recipe_layout.setSpacing(15)
@@ -75,14 +75,18 @@ class RecipeApp(QMainWindow):
                     image_label = QLabel()
                     image_label.setPixmap(pixmap.scaled(300, 300, Qt.KeepAspectRatio))
                     image_label.setStyleSheet("border: none;")  
-
                     recipe_layout.addWidget(image_label)
                 else:
                     image_label = QLabel("No Image")
                     image_label.setStyleSheet("color: white; font-weight: bold;")
                     recipe_layout.addWidget(image_label)
+            else:
+                image_label = QLabel("No Image")
+                image_label.setStyleSheet("color: white; font-weight: bold;")
+                recipe_layout.addWidget(image_label)
 
             info_layout = QVBoxLayout()
+            
             recipe_title = QLabel(recipe[1])
             recipe_title.setStyleSheet("color: white; font-size: 14pt; font-weight: bold;")
             info_layout.addWidget(recipe_title)
@@ -109,23 +113,51 @@ class RecipeApp(QMainWindow):
                     border-radius: 5px;
                     padding: 5px 10px;
                 }
+                QPushButton:hover {
+                    background-color: #6475ff;  /* Lighter blue on hover */
+                }
                 QPushButton[clicked="true"] {
-                    /* implement turn green button logic here*/
+                    background-color: #28a745;  /* Green when clicked */
                 }
             """)
+
+            favourite_button = QPushButton("❤")
+            favourite_button.setProperty("clicked", False)
+            favourite_button.setFixedSize(70, 40)
+            favourite_button.setStyleSheet("""
+                QPushButton {
+                    background-color: #444444;
+                    color: red;
+                    font-size: 20pt;
+                    font-weight: bold;
+                    border-radius: 5px;
+                    padding: 5px 10px;
+                }
+                QPushButton:hover {
+                    background-color: #555555;  /* Slightly lighter grey on hover */
+                }
+                QPushButton[clicked="true"] {
+                    color: green;  /* Change color when clicked */
+                }
+            """)
+
+            button_layout = QHBoxLayout()  
+            button_layout.addWidget(view_button)  
+            button_layout.addWidget(favourite_button) 
+
             view_button.clicked.connect(lambda checked, r_id=recipe[0]: self.on_view_button_clicked(r_id, view_button))
-            info_layout.addWidget(view_button, alignment=Qt.AlignLeft)
 
-            recipe_layout.addLayout(info_layout)
+            info_layout.addLayout(button_layout)  
+            recipe_layout.addLayout(info_layout) 
 
-            # Center the recipe card
             card_container = QHBoxLayout()
             card_container.addWidget(recipe_frame)
             card_container.setAlignment(Qt.AlignCenter)
             scroll_layout.addLayout(card_container)
 
 
-        # Add the back and close buttons
+
+
         button_layout = QHBoxLayout()
         back_button = QPushButton("Back")
         back_button.setStyleSheet("""
@@ -170,7 +202,7 @@ class RecipeApp(QMainWindow):
         recipe_info = getRecipeInfo.get_recipe_info(recipe_id)
         self.recipeInfoWindow = RecipeInstructionsPage(recipe_info, parent=self)
         self.recipeInfoWindow.show()
-        self.hide()  # Hide the current window instead of closing it
+        self.hide()  
         view_button.setProperty("clicked", True)
         view_button.setStyleSheet(view_button.styleSheet())
         

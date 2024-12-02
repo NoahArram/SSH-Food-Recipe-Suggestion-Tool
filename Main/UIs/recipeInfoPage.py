@@ -131,8 +131,22 @@ class RecipeInstructionsPage(QMainWindow):
 
         # Back button
         back_button = QPushButton("Back")
+        back_button.setFixedWidth(100)
         back_button.setStyleSheet(
-            "background-color: #4355ff; color: white; font-size: 12pt; font-weight: bold; padding: 10px; border-radius: 5px;"
+            """
+            QPushButton {
+                background-color: #4355ff; 
+                color: white; 
+                font-size: 16px; 
+                padding: 12px; 
+                font-weight: bold; 
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #5a6aff;
+            }
+        """
+
         )
         back_button.clicked.connect(self.go_back)
 

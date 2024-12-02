@@ -168,6 +168,9 @@ class RecipeApp(QMainWindow):
                 border-radius: 5px;
                 padding: 5px 10px;
             }
+            QPushButton:hover {
+                background-color: #5a6aff;
+            }
             QPushButton:clicked {
                 background-color: green;
             }
@@ -184,6 +187,9 @@ class RecipeApp(QMainWindow):
                 font-weight: bold;
                 border-radius: 5px;
                 padding: 5px 10px;
+            }
+            QPushButton:hover {
+            background-color: #5a6aff;
             }
             QPushButton:clicked {
                 background-color: green;

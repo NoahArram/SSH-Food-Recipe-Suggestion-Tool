@@ -225,35 +225,4 @@ class TenantSelectionApp(QMainWindow):
 
         ingredients = self.get_ingredients_for_tenants(selected_tenants)
         from API import getRecipes
-        recipes = getRecipes.get_recipes_by_ingredients(ingredients)
-
-        # Initialize RecipeApp with recipes and show it
-        self.recipeListWindow = RecipeApp(recipes, parent=self)
-        self.recipeListWindow.show()
-        self.hide()
-
-    def get_ingredients_for_tenants(self, tenants):
-        """Retrieve ingredients for the selected tenants."""
-        import os
-
-        # Get the directory of the current script
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        # Construct the path to the data file relative to the script's directory
-        data_file_path = os.path.join(current_dir, '../Data/ingredient.json')
-
-        # Open the file using the constructed path
-        with open(data_file_path, 'r') as f:
-            data = json.load(f)
-
-        ingredients = []
-        for entry in data['main']:
-            if entry['Owner'] in tenants:
-                ingredients.extend(entry['ingredients'])
-        return list(set(ingredients))
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = TenantSelectionApp()
-    window.show()
-    sys.exit(app.exec_())
+ 

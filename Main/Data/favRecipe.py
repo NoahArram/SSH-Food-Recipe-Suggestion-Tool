@@ -38,18 +38,4 @@ favourites = {
                       [121223, 'Potato Puff', 2, 3, 0.6, 65, 8, 'https://img.spoonacular.com/recipes/121223-556x370.jpg'], 
                       [119793, 'No-bake Decadent Chocolate Cheesecake', 3, 3, 0.5, 1455, 12, 'https://img.spoonacular.com/recipes/119793-556x370.jpg'],
                         [1026718, 'Easy Sugar Free No Bake Keto Cheesecake For One', 3, 3, 0.5, 5, 1, 'https://img.spoonacular.com/recipes/1026718-556x370.jpg'], 
-                        [866517, 'Swiss Cheese Chicken Casserole', 3, 3, 0.5, 45, 6, 'https://img.spoonacular.com/recipes/866517-556x370.jpg']]
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
+                        [866517, 'Swiss Cheese Chicken Casserole', 3, 3, 0.5, 45, 6, 'https://img.spoonacular.com/recipes/

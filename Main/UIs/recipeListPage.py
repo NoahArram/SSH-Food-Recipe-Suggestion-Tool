@@ -206,22 +206,4 @@ class RecipeApp(QMainWindow):
 
     def on_favourite_button_clicked(self, recipe, favourite_button):
         """Add the recipe to the user's favorites and change the button state."""
-        user = self.parent().selected_tenants[0]  # Assuming a single user is selected
-        if user in favorites:
-            favorites[user].append(recipe)
-            print(f"Recipe {recipe[1]} added to {user}'s favorites.")
-        else:
-            print(f"User {user} not found in favorites.")
-        favourite_button.setProperty("clicked", True)
-        favourite_button.setStyleSheet(favourite_button.styleSheet())
-
-    def go_back(self):
-        """Return to the tenant selection page."""
-        self.close()
-        if self.parent() is not None:
-            self.parent().show()
-
-    def close_application(self):
-        """Close the application."""
-        self.close()
-        QApplication.instance().quit()
+        user = self.parent().selected_tenants[0] 

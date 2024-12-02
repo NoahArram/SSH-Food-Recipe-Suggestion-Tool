@@ -11,7 +11,7 @@ from io import BytesIO
 from UIs.recipeInfoPage import RecipeInstructionsPage
 
 from API import getRecipes
-from Data.favRecipe import favorites
+from Data import favRecipe
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -207,8 +207,9 @@ class RecipeApp(QMainWindow):
     def on_favourite_button_clicked(self, recipe, favourite_button):
         """Add the recipe to the user's favorites and change the button state."""
         user = self.parent().selected_tenants[0]  # Assuming a single user is selected
-        if user in favorites:
-            favorites[user].append(recipe)
+        favourites = favRecipe.favourites
+        if user in favourites:
+            favourites[user].append(recipe)
             print(f"Recipe {recipe[1]} added to {user}'s favorites.")
         else:
             print(f"User {user} not found in favorites.")

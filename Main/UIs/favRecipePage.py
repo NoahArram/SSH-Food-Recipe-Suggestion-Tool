@@ -96,7 +96,7 @@ class FavoritesPage(QMainWindow):
         remove_button.setStyleSheet(
             "background-color: #ff4444; color: white; font-size: 12px; border-radius: 5px; padding: 5px;"
         )
-        remove_button.clicked.connect(lambda: self.remove_recipe(recipe[1]))  # Recipe ID index is 0
+        remove_button.clicked.connect(lambda: self.remove_recipe(recipe[0]))  # Recipe ID index is 0
         details_layout.addWidget(remove_button)
 
         recipe_layout.addLayout(details_layout)

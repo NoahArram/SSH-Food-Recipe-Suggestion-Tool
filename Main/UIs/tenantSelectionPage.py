@@ -7,41 +7,34 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
-# Import recipeListPage
 from UIs.recipeListPage import RecipeApp
-# Import FavoritesPage
 from UIs.favRecipePage import FavoritesPage
 
 class TenantSelectionApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Select Tenants")
-        self.setGeometry(100, 100, 1000, 600)  # Window size
-        self.selected_tenants = []  # Track selected tenants
+        self.setGeometry(100, 100, 1000, 600)  
+        self.selected_tenants = []  
 
-        # Initialize the UI
         self.initUI()
 
     def initUI(self):
-        # Main layout setup
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
         self.main_layout = QVBoxLayout(self.central_widget)
 
-        # Add the top container
         self.add_top_container()
 
-        # Add the tenant container
         self.add_tenant_container()
 
-        # Add the bottom container
         self.add_bottom_container()
 
     def add_top_container(self):
         """Create and add the top container with the title."""
         self.top_container = QWidget(self.central_widget)
         self.top_container.setStyleSheet("background-color: #4355ff;")
-        self.top_container.setFixedHeight(50)  # Consistent top bar height
+        self.top_container.setFixedHeight(50)  
         self.main_layout.addWidget(self.top_container)
 
         top_layout = QHBoxLayout(self.top_container)
@@ -59,7 +52,6 @@ class TenantSelectionApp(QMainWindow):
         tenant_layout = QHBoxLayout(self.tenant_container)
         tenant_layout.setAlignment(Qt.AlignCenter)
 
-        # Tenant data (images and names)
         tenant_images = [
             "UIs/images/pexels-anastasiya-gepp-654466-1462630.jpg",
             "UIs/images/pexels-hai-nguyen-825252-1699419.jpg",
@@ -75,14 +67,13 @@ class TenantSelectionApp(QMainWindow):
     def create_tenant_card(self, image_path, name):
         """Create an individual tenant card with larger elements and fixed button styling."""
         card = QWidget()
-        card.setStyleSheet("background-color: #eeeff4; border-radius: 15px;")  # Larger rounded card
+        card.setStyleSheet("background-color: #eeeff4; border-radius: 15px;")  
         card_layout = QVBoxLayout(card)
         card_layout.setAlignment(Qt.AlignCenter)
 
-        # Load and display the tenant image with larger size
         try:
             pixmap = QPixmap(image_path)
-            pixmap = pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)  # Increased image size
+            pixmap = pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)  
             image_label = QLabel()
             image_label.setPixmap(pixmap)
         except Exception:
@@ -92,13 +83,11 @@ class TenantSelectionApp(QMainWindow):
         image_label.setAlignment(Qt.AlignCenter)
         card_layout.addWidget(image_label)
 
-        # Add the tenant name with larger font size
         name_label = QLabel(name)
-        name_label.setStyleSheet("color: black; font-size: 20px; font-weight: bold;")  # Larger name font
+        name_label.setStyleSheet("color: black; font-size: 20px; font-weight: bold;")  
         name_label.setAlignment(Qt.AlignCenter)
         card_layout.addWidget(name_label)
 
-        # Add the Select button with larger size and padding
         select_button = QPushButton("Select")
         select_button.setStyleSheet(
             """
@@ -108,24 +97,23 @@ class TenantSelectionApp(QMainWindow):
                 font-size: 16px; 
                 font-weight: bold; 
                 padding: 10px 20px; 
-                border-radius: 12px; /* Rounded corners */
+                border-radius: 12px; 
             }
             QPushButton:pressed {
-                background-color: green;  /* Change color when pressed */
-                border-radius: 12px; /* Ensure rounded corners on press */
+                background-color: green; 
+                border-radius: 12px; 
             }
             QPushButton:checked {
-                background-color: green; /* When button is checked, color is green */
+                background-color: green;
             }
             QPushButton:hover {
-                background-color: #6677ff;  /* Hover color */
+                background-color: #6677ff;  
             }
             """
         )
         select_button.clicked.connect(lambda: self.toggle_selection(name, select_button))
         card_layout.addWidget(select_button)
 
-        # Add the Favorites button
         fav_button = QPushButton("Favorites")
         fav_button.setStyleSheet(
             """
@@ -135,14 +123,14 @@ class TenantSelectionApp(QMainWindow):
                 font-size: 16px; 
                 font-weight: bold; 
                 padding: 10px 20px; 
-                border-radius: 12px; /* Rounded corners */
+                border-radius: 12px; 
             }
             QPushButton:pressed {
-                background-color: #ff6666;  /* Change color when pressed */
-                border-radius: 12px; /* Ensure rounded corners on press */
+                background-color: #ff6666;  
+                border-radius: 12px; 
             }
             QPushButton:hover {
-                background-color: #ff7777;  /* Hover color */
+                background-color: #ff7777;  
             }
             """
         )
@@ -213,7 +201,7 @@ class TenantSelectionApp(QMainWindow):
                     font-size: 16px; 
                     font-weight: bold; 
                     padding: 10px 20px; 
-                    border-radius: 12px; /* Rounded corners */
+                    border-radius: 12px; 
                 }
                 
                 """
@@ -229,7 +217,7 @@ class TenantSelectionApp(QMainWindow):
                     font-size: 16px; 
                     font-weight: bold; 
                     padding: 10px 20px; 
-                    border-radius: 12px; /* Rounded corners */
+                    border-radius: 12px;
                 }
                 
                 """
@@ -245,7 +233,6 @@ class TenantSelectionApp(QMainWindow):
         from API import getRecipes
         recipes = getRecipes.get_recipes_by_ingredients(ingredients)
 
-        # Initialize RecipeApp with recipes and show it
         self.recipeListWindow = RecipeApp(recipes, parent=self)
         self.recipeListWindow.show()
         self.hide()
@@ -254,12 +241,9 @@ class TenantSelectionApp(QMainWindow):
         """Retrieve ingredients for the selected tenants."""
         import os
 
-        # Get the directory of the current script
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        # Construct the path to the data file relative to the script's directory
         data_file_path = os.path.join(current_dir, '../Data/ingredient.json')
 
-        # Open the file using the constructed path
         with open(data_file_path, 'r') as f:
             data = json.load(f)
 

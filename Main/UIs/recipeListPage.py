@@ -115,7 +115,7 @@ class RecipeApp(QMainWindow):
                     padding: 5px 10px;
                 }
                 QPushButton:hover {
-                    background-color: #6475ff;  /* Lighter blue on hover */
+                    background-color: #6475ff;
                 }
                 
             """)
@@ -133,7 +133,7 @@ class RecipeApp(QMainWindow):
                     padding: 5px 10px;
                 }
                 QPushButton:hover {
-                    background-color: #555555;  /* Slightly lighter grey on hover */
+                    background-color: #555555;  
                 }
                
             """)

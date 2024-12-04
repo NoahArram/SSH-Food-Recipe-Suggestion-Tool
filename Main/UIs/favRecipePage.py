@@ -8,7 +8,6 @@ from PyQt5.QtGui import QPixmap
 from io import BytesIO
 import requests
 
-# Data import
 from Data.favRecipe import favourites  
 
 def load_image_from_url(url):

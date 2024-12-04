@@ -227,7 +227,10 @@ class TenantSelectionApp(QMainWindow):
         selected_tenants = self.selected_tenants
         if not selected_tenants:
             print("No tenants selected.")
-            return
+        else:
+            print("Selected tenants: " , selected_tenants)
+
+
 
         ingredients = self.get_ingredients_for_tenants(selected_tenants)
         from API import getRecipes

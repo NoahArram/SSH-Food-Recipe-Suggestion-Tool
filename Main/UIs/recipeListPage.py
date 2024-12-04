@@ -200,6 +200,8 @@ class RecipeApp(QMainWindow):
         """Open the recipe information page and change the button state."""
         from API import getRecipeInfo
         recipe_info = getRecipeInfo.get_recipe_info(recipe_id)
+        print(recipe_info[1])
+        print(recipe_info)
         self.recipeInfoWindow = RecipeInstructionsPage(recipe_info, parent=self)
         self.recipeInfoWindow.show()
         self.hide()
@@ -212,9 +214,13 @@ class RecipeApp(QMainWindow):
         favourites = favRecipe.favourites
         if user in favourites:
             favourites[user].append(recipe)
-            print(f"Recipe {recipe[1]} added to {user}'s favorites.")
+            print(f"Recipe {recipe[1]} added to {user}'s favorites. \n")
         else:
             print(f"User {user} not found in favorites.")
+
+        #print(favourites[user])
+        recipe_titles = [fav[1] for fav in favourites[user]]
+        print(f"All favorite recipes for {user}: {recipe_titles}")
         favourite_button.setProperty("clicked", True)
         favourite_button.setStyleSheet(favourite_button.styleSheet())
 
